@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Musk · logo candidates</title>
+<style>
+  :root{
+    --bg:oklch(1 0 0);--fg:oklch(0.145 0 0);--muted:oklch(0.49 0 0);--border:oklch(0.93 0 0);--card:oklch(1 0 0);
+    --primary:oklch(0.692 0.141 243.716);
+  }
+  html.dark{--bg:oklch(0.145 0 0);--fg:oklch(0.985 0 0);--muted:oklch(0.708 0 0);--border:oklch(1 0 0 / 10%);--card:oklch(0.208 0 0);--primary:oklch(0.708 0.16 249.003)}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:'Public Sans',ui-sans-serif,system-ui,sans-serif;padding:48px 24px}
+  h1{font-size:24px;margin:0 0 8px;letter-spacing:-.02em}
+  p.sub{color:var(--muted);margin:0 0 36px;font-size:14px}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:760px}
+  .card{border:1px solid var(--border);border-radius:16px;background:var(--card);padding:32px;display:flex;flex-direction:column;align-items:center;gap:18px}
+  .card .mark{width:72px;height:72px;display:grid;place-items:center}
+  .card .mark svg{width:100%;height:100%;display:block}
+  .card .name{font-weight:700;letter-spacing:-.01em}
+  .card .desc{color:var(--muted);font-size:12.5px;text-align:center;line-height:1.5}
+  .card .tag{font-size:11px;font-weight:600;color:var(--primary);border:1px solid var(--border);border-radius:999px;padding:3px 10px}
+  .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
+  .toolbar{position:fixed;right:16px;bottom:16px}
+  .toolbar button{border:1px solid var(--border);background:var(--card);color:var(--fg);border-radius:10px;padding:8px 12px;font-size:13px;cursor:pointer}
+</style>
+</head>
+<body>
+<h1>Musk — logo candidates</h1>
+<p class="sub">4 code-drawn marks, transparent, crisp at any size. Pick one and tell me the letter (A/B/C/D).</p>
+
+<div class="grid">
+
+  <!-- A: flowing V (abstract, vidu-style: single fluid stroke forming V) -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="a" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#6d8bff"/><stop offset="1" stop-color="#9b6dff"/></linearGradient></defs>
+        <path d="M4 7c6 1 9 4 12 9s6 8 12 9" stroke="url(#a)" stroke-width="3.4" stroke-linecap="round"/>
+        <path d="M28 7c-6 1-9 4-12 9s-6 8-12 9" stroke="url(#a)" stroke-width="3.4" stroke-linecap="round"/>
+        <circle cx="16" cy="16" r="2.4" fill="#9b6dff"/>
+      </svg>
+    </div>
+    <div class="name">A · Fluid V</div>
+    <div class="desc">Two crossing strokes forming a soft V with a node at the crossing. Abstract, fluid, AI-gen feel.</div>
+    <span class="tag">abstract</span>
+  </div>
+
+  <!-- B: rounded gradient square + minimal V cut (clean app-icon style) -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="b" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#5b7cfa"/><stop offset="1" stop-color="#7c5bfa"/></linearGradient></defs>
+        <rect x="2" y="2" width="28" height="28" rx="9" fill="url(#b)"/>
+        <path d="M9 11l7 10 7-10" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="name">B · App V</div>
+    <div class="desc">Rounded gradient tile with a clean white V. Most app-icon-like, scales to favicon best.</div>
+    <span class="tag">app-icon</span>
+  </div>
+
+  <!-- C: aperture / lens (video/AI core: concentric arcs + dot) -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="c" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#22d3ee"/><stop offset="1" stop-color="#6366f1"/></linearGradient></defs>
+        <circle cx="16" cy="16" r="12" stroke="url(#c)" stroke-width="2.6"/>
+        <path d="M16 4a12 12 0 0 1 10.4 6L16 16z" fill="url(#c)"/>
+        <circle cx="16" cy="16" r="3.2" fill="url(#c)"/>
+      </svg>
+    </div>
+    <div class="name">C · Aperture</div>
+    <div class="desc">Lens/aperture with a shaded quadrant and core dot. Reads as an AI/video gateway core.</div>
+    <span class="tag">lens</span>
+  </div>
+
+  <!-- D: routed M (current, refined: thinner stroke, glowing nodes) -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="d" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#5b7cfa"/><stop offset="1" stop-color="#7c5bfa"/></linearGradient></defs>
+        <rect x="2" y="2" width="28" height="28" rx="9" fill="url(#d)"/>
+        <path d="M8 23V11l8 7 8-7v12" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="8" cy="11" r="1.7" fill="#cfe0ff"/>
+        <circle cx="24" cy="11" r="1.7" fill="#cfe0ff"/>
+        <circle cx="16" cy="18" r="1.7" fill="#cfe0ff"/>
+      </svg>
+    </div>
+    <div class="name">D · Routed M</div>
+    <div class="desc">Current mark, refined: thinner stroke, soft nodes. Keeps the routing concept for an API gateway.</div>
+    <span class="tag">routing</span>
+  </div>
+
+</div>
+
+<div class="toolbar"><button id="t">🌙 Toggle</button></div>
+<script>
+(function(){var h=document.documentElement,b=document.getElementById('t');b.onclick=function(){h.classList.toggle('dark')}})();
+</script>
+</body>
+</html>
