@@ -1,0 +1,34 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# editor / os
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# secrets & env — never commit (workflow Section 10)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# node / build
+node_modules/
+dist/
+.cache/
+
+# logs
+logs/
+*.log
+
+# newapi runtime data (if run locally here)
+data/
+
+# claude code local settings (machine-local, do not commit)
+.claude/settings.local.json

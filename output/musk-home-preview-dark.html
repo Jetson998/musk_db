@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Musk · Home (preview v2)</title>
+<style>
+  /* ---- NewAPI theme tokens (approximated from web/default/src/styles/theme.css) ---- */
+  :root{
+    --background: oklch(1 0 0); --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0); --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0); --popover-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.692 0.141 243.716); --primary-foreground: oklch(1 0 0);
+    --secondary: oklch(0.97 0 0); --secondary-foreground: oklch(0.42 0.16 250);
+    --muted: oklch(0.97 0 0); --muted-foreground: oklch(0.49 0 0);
+    --accent-foreground: oklch(0.145 0 0);
+    --destructive: oklch(0.577 0.245 27.325); --destructive-foreground: oklch(0.985 0 0);
+    --success: oklch(0.596 0.145 163.225); --warning: oklch(0.681 0.162 75.834);
+    --info: oklch(0.588 0.158 241.966);
+    --border: oklch(0.93 0 0); --input: oklch(0.93 0 0); --ring: oklch(0.708 0.16 249.003);
+    color-scheme: light;
+  }
+  .dark{
+    --background: oklch(0.145 0 0); --foreground: oklch(0.985 0 0);
+    --card: oklch(0.208 0 0); --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.208 0 0); --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.708 0.16 249.003); --primary-foreground: oklch(0.145 0 0);
+    --secondary: oklch(0.269 0 0); --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0); --muted-foreground: oklch(0.708 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216); --success: oklch(0.696 0.17 162.48);
+    --warning: oklch(0.769 0.188 70.08); --info: oklch(0.723 0.191 231.715);
+    --border: oklch(1 0 0 / 10%); --input: oklch(1 0 0 / 15%); --ring: oklch(0.708 0.16 249.003);
+    color-scheme: dark;
+  }
+  html,body{margin:0}
+  body{background:var(--background);color:var(--foreground);font-family:'Public Sans',ui-sans-serif,system-ui,-apple-system,sans-serif}
+
+  /* preview-only fake header (NewAPI provides its own in production) */
+  .nav{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:60px;border-bottom:1px solid var(--border);background:color-mix(in oklch,var(--background) 82%,transparent);backdrop-filter:blur(10px)}
+  .nav .brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em}
+  .nav .brand .logo{width:26px;height:26px;border-radius:8px;background:var(--primary)}
+  .nav .links{display:flex;align-items:center;gap:18px;font-size:14px}
+  .nav .links a{color:var(--muted-foreground)}
+  .nav .links a.nb{color:var(--primary);font-weight:600}
+  .foot{border-top:1px solid var(--border);padding:24px;text-align:center;color:var(--muted-foreground);font-size:13px}
+  .toolbar{position:fixed;right:18px;bottom:18px;display:flex;gap:8px;z-index:50}
+  .toolbar button{border:1px solid var(--border);background:var(--card);color:var(--foreground);border-radius:11px;padding:9px 13px;font-size:13px;cursor:pointer;box-shadow:0 10px 28px -10px rgba(0,0,0,.4)}
+</style>
+</head>
+<body>
+
+  <!-- preview-only header -->
+  <div class="nav">
+    <div class="brand"><span class="logo"></span> Musk</div>
+    <div class="links">
+      <a href="#models">Models</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a>
+      <a class="nb" href="/login">Sign in</a><a class="nb" href="/login">Get started</a>
+    </div>
+  </div>
+
+  <!-- ============ Musk home content (mirrors musk-home.html v2) ============ -->
+  <style>
+  .mk{--mk-max:1180px;color:var(--foreground);font:inherit;line-height:1.65;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .mk *{box-sizing:border-box}
+  .mk a{color:inherit;text-decoration:none}
+  .mk .wrap{max-width:var(--mk-max);margin:0 auto;padding:0 24px}
+  .mk .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-foreground);padding:7px 14px;border:1px solid var(--border);border-radius:999px;background:color-mix(in oklch,var(--card) 60%,transparent)}
+  .mk .eyebrow .live{width:7px;height:7px;border-radius:999px;background:var(--success);box-shadow:0 0 0 3px color-mix(in oklch,var(--success) 22%,transparent)}
+  .mk .grad{background:linear-gradient(105deg,var(--primary),color-mix(in oklch,var(--primary) 55%,#fff 60%));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .mk .hero{position:relative;overflow:hidden;padding:104px 0 80px;border-bottom:1px solid var(--border);background:radial-gradient(820px 480px at 80% -10%, color-mix(in oklch,var(--primary) 26%,transparent), transparent 58%),radial-gradient(640px 360px at 6% 6%, color-mix(in oklch,var(--primary) 14%,transparent), transparent 60%)}
+  .mk .hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:48px 48px;opacity:.20;mask-image:radial-gradient(120% 80% at 50% 0,#000 28%,transparent 74%);-webkit-mask-image:radial-gradient(120% 80% at 50% 0,#000 28%,transparent 74%);pointer-events:none}
+  .mk .hero .row{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  .mk .hero h1{font-size:clamp(36px,5.4vw,64px);line-height:1.04;letter-spacing:-.025em;font-weight:700;margin:24px 0 0;max-width:620px}
+  .mk .hero p.lead{font-size:clamp(16px,1.6vw,18.5px);color:var(--muted-foreground);max-width:560px;margin:22px 0 34px}
+  .mk .btns{display:flex;flex-wrap:wrap;gap:12px}
+  .mk .btn{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:15px;padding:13px 24px;border-radius:11px;border:1px solid transparent;transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
+  .mk .btn svg{width:16px;height:16px}
+  .mk .btn-primary{background:var(--primary);color:var(--primary-foreground);box-shadow:0 10px 34px -12px color-mix(in oklch,var(--primary) 72%,transparent)}
+  .mk .btn-primary:hover{transform:translateY(-1px);box-shadow:0 18px 44px -14px color-mix(in oklch,var(--primary) 85%,transparent)}
+  .mk .btn-ghost{background:color-mix(in oklch,var(--card) 60%,transparent);color:var(--foreground);border-color:var(--border)}
+  .mk .btn-ghost:hover{transform:translateY(-1px);border-color:color-mix(in oklch,var(--primary) 50%,var(--border))}
+  .mk .btn .arw{transition:transform .18s ease}
+  .mk .btn:hover .arw{transform:translateX(3px)}
+  .mk .hero .micro{margin-top:26px;display:flex;gap:22px;flex-wrap:wrap;color:var(--muted-foreground);font-size:13px}
+  .mk .hero .micro .it{display:inline-flex;align-items:center;gap:7px}
+  .mk .hero .micro svg{width:15px;height:15px;color:var(--primary)}
+  .mk .term{position:relative;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:color-mix(in oklch,var(--background) 78%,#000 22%);box-shadow:0 40px 90px -50px color-mix(in oklch,var(--primary) 40%,#000)}
+  .dark .term{background:color-mix(in oklch,var(--background) 70%,#000 30%)}
+  .mk .term .bar{display:flex;align-items:center;gap:7px;padding:12px 16px;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted-foreground)}
+  .mk .term .bar .d{width:11px;height:11px;border-radius:999px;background:var(--border)}
+  .mk .term .bar .d.r{background:color-mix(in oklch,#f87171 70%,var(--border))}
+  .mk .term .bar .d.y{background:color-mix(in oklch,#fbbf24 70%,var(--border))}
+  .mk .term .bar .d.g{background:color-mix(in oklch,#34d399 70%,var(--border))}
+  .mk .term .bar .ttl{margin-left:8px}
+  .mk .term pre{margin:0;padding:18px 18px 20px;overflow-x:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.7;color:var(--foreground)}
+  .mk .term .c{color:var(--muted-foreground)}
+  .mk .term .k{color:color-mix(in oklch,var(--primary) 88%,var(--foreground))}
+  .mk .term .s{color:color-mix(in oklch,#34d399 80%,var(--foreground))}
+  .mk .term .p{color:color-mix(in oklch,#fbbf24 80%,var(--foreground))}
+  .mk .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-bottom:1px solid var(--border)}
+  .mk .stats .s{background:var(--background);padding:30px 20px;text-align:center}
+  .mk .stats .n{font-size:clamp(23px,3vw,32px);font-weight:700;letter-spacing:-.015em}
+  .mk .stats .n .u{color:var(--muted-foreground);font-weight:600;font-size:.7em;margin-left:2px}
+  .mk .stats .l{font-size:13px;color:var(--muted-foreground);margin-top:6px;letter-spacing:.01em}
+  .mk .sec{padding:84px 0;border-bottom:1px solid var(--border)}
+  .mk .sec-head{max-width:680px}
+  .mk .sec h2{font-size:clamp(25px,3.4vw,36px);letter-spacing:-.022em;font-weight:700;margin:18px 0 14px}
+  .mk .sec .sub{color:var(--muted-foreground);font-size:16.5px}
+  .mk .grp-label{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--muted-foreground);margin:0 0 18px;letter-spacing:.02em;text-transform:uppercase}
+  .mk .grp-label::after{content:"";flex:1;height:1px;background:var(--border)}
+  .mk .mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(264px,1fr));gap:14px}
+  .mk .mgrid+.mk .grp-label,.mk .grp-label+.mgrid+.mk .grp-label{margin-top:30px}
+  .mk .mcard{position:relative;padding:20px 20px 18px;border:1px solid var(--border);border-radius:14px;background:color-mix(in oklch,var(--card) 84%,transparent);transition:border-color .18s ease,transform .18s ease,box-shadow .22s ease;overflow:hidden}
+  .mk .mcard::before{content:"";position:absolute;inset:0;border-radius:14px;padding:1px;background:linear-gradient(145deg,color-mix(in oklch,var(--primary) 42%,transparent),transparent 55%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .22s ease}
+  .mk .mcard:hover{transform:translateY(-2px);border-color:color-mix(in oklch,var(--primary) 42%,var(--border));box-shadow:0 22px 46px -28px color-mix(in oklch,var(--primary) 62%,#000)}
+  .mk .mcard:hover::before{opacity:1}
+  .mk .mrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .mk .mname{font-size:15.5px;font-weight:600;letter-spacing:-.005em}
+  .mk .prov{font-size:11px;font-weight:600;color:var(--muted-foreground);padding:3px 9px;border:1px solid var(--border);border-radius:999px;white-space:nowrap}
+  .mk .prov.flag{color:color-mix(in oklch,var(--primary) 80%,var(--foreground));border-color:color-mix(in oklch,var(--primary) 38%,var(--border));background:color-mix(in oklch,var(--primary) 10%,transparent)}
+  .mk .mdesc{font-size:13px;color:var(--muted-foreground);margin-top:13px;min-height:36px}
+  .mk .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:15px}
+  .mk .tag{font-size:11px;font-weight:600;color:color-mix(in oklch,var(--primary) 78%,var(--foreground));background:color-mix(in oklch,var(--primary) 11%,transparent);padding:4px 9px;border-radius:6px;border:1px solid color-mix(in oklch,var(--primary) 16%,transparent)}
+  .mk .more-bar{margin-top:34px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:22px 26px;border:1px solid var(--border);border-radius:14px;background:color-mix(in oklch,var(--card) 64%,transparent)}
+  .mk .more-bar .t{font-weight:600}
+  .mk .more-bar .ds{font-size:13px;color:var(--muted-foreground);margin-top:3px}
+  .mk .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:38px}
+  .mk .fcard{position:relative;padding:24px;border:1px solid var(--border);border-radius:14px;background:color-mix(in oklch,var(--card) 76%,transparent);transition:border-color .18s ease,transform .18s ease}
+  .mk .fcard:hover{transform:translateY(-2px);border-color:color-mix(in oklch,var(--primary) 38%,var(--border))}
+  .mk .fcard .ico{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:color-mix(in oklch,var(--primary) 13%,transparent);color:var(--primary);margin-bottom:16px;border:1px solid color-mix(in oklch,var(--primary) 18%,transparent)}
+  .mk .fcard .ico svg{width:21px;height:21px}
+  .mk .fcard h3{font-size:16px;font-weight:600;margin-bottom:7px;letter-spacing:-.005em}
+  .mk .fcard p{font-size:14px;color:var(--muted-foreground)}
+  .mk .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:38px}
+  .mk .pcard{padding:26px;border:1px solid var(--border);border-radius:14px;background:color-mix(in oklch,var(--card) 80%,transparent);transition:border-color .18s ease,transform .18s ease}
+  .mk .pcard:hover{transform:translateY(-2px);border-color:color-mix(in oklch,var(--primary) 38%,var(--border))}
+  .mk .pcard .ico{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;background:color-mix(in oklch,var(--primary) 13%,transparent);color:var(--primary);margin-bottom:16px;border:1px solid color-mix(in oklch,var(--primary) 18%,transparent)}
+  .mk .pcard .ico svg{width:20px;height:20px}
+  .mk .pcard h3{font-size:16px;font-weight:600;margin-bottom:7px}
+  .mk .pcard p{font-size:14px;color:var(--muted-foreground)}
+  .mk .pcta{margin-top:32px}
+  .mk .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:38px}
+  .mk .step{position:relative;padding:24px;border:1px solid var(--border);border-radius:14px;background:color-mix(in oklch,var(--card) 76%,transparent)}
+  .mk .step .n{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:13px;font-weight:700;background:var(--primary);color:var(--primary-foreground);margin-bottom:16px}
+  .mk .step h3{font-size:15px;font-weight:600;margin-bottom:6px}
+  .mk .step p{font-size:13px;color:var(--muted-foreground)}
+  .mk .step a.lnk{display:inline-flex;align-items:center;gap:6px;color:var(--primary);font-weight:600;font-size:13px;margin-top:12px}
+  .mk .step a.lnk svg{width:14px;height:14px}
+  .mk .faq{margin-top:38px;display:flex;flex-direction:column;gap:10px}
+  .mk .faq details{border:1px solid var(--border);border-radius:12px;background:color-mix(in oklch,var(--card) 68%,transparent);overflow:hidden;transition:border-color .18s ease}
+  .mk .faq details[open]{border-color:color-mix(in oklch,var(--primary) 30%,var(--border))}
+  .mk .faq summary{list-style:none;cursor:pointer;padding:19px 22px;font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .mk .faq summary::-webkit-details-marker{display:none}
+  .mk .faq summary .pm{flex:none;width:22px;height:22px;border-radius:7px;display:grid;place-items:center;border:1px solid var(--border);color:var(--muted-foreground);transition:transform .18s ease,background .18s ease,color .18s ease}
+  .mk .faq summary .pm svg{width:13px;height:13px}
+  .mk .faq details[open] summary .pm{transform:rotate(45deg);border-color:color-mix(in oklch,var(--primary) 50%,var(--border));color:var(--primary)}
+  .mk .faq .a{padding:0 22px 19px;color:var(--muted-foreground);font-size:14.5px}
+  .mk .faq .a a{color:var(--primary);font-weight:600}
+  .mk .faq .a code{font-family:ui-monospace,monospace;font-size:13px;background:color-mix(in oklch,var(--muted) 50%,transparent);padding:2px 6px;border-radius:5px}
+  /* model specs + routing */
+  .mk .mcard .spec{display:flex;gap:14px;margin-top:13px;padding-top:13px;border-top:1px dashed var(--border);font-size:12px;color:var(--muted-foreground)}
+  .mk .mcard .spec .sp{display:inline-flex;align-items:center;gap:5px}
+  .mk .mcard .spec .sp svg{width:13px;height:13px;color:color-mix(in oklch,var(--primary) 70%,var(--foreground))}
+  .mk .mcard .spec .sp b{color:var(--foreground);font-weight:600}
+  .mk .route{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:36px;background:color-mix(in oklch,var(--card) 76%,transparent)}
+  .mk .route .col{padding:32px}
+  .mk .route .col+.col{border-left:1px solid var(--border)}
+  .mk .route h3{font-size:16px;font-weight:600;margin-bottom:14px;letter-spacing:-.005em}
+  .mk .route .desc{font-size:13.5px;color:var(--muted-foreground);margin-bottom:20px;line-height:1.6}
+  .mk .route .flow{display:flex;flex-direction:column;gap:10px}
+  .mk .route .flow .node{display:flex;align-items:center;gap:11px;padding:11px 14px;border:1px solid var(--border);border-radius:11px;background:color-mix(in oklch,var(--background) 60%,transparent);font-size:13px;font-weight:600}
+  .mk .route .flow .node .ic{flex:none;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;background:color-mix(in oklch,var(--primary) 13%,transparent);color:var(--primary);border:1px solid color-mix(in oklch,var(--primary) 18%,transparent)}
+  .mk .route .flow .node .ic svg{width:14px;height:14px}
+  .mk .route .flow .node .arr{margin-left:auto;color:var(--muted-foreground)}
+  .mk .route .flow .node .arr svg{width:16px;height:16px}
+  .mk .route .strats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .mk .route .strat{padding:13px 14px;border:1px solid var(--border);border-radius:11px;background:color-mix(in oklch,var(--background) 55%,transparent)}
+  .mk .route .strat .st{font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+  .mk .route .strat .st svg{width:15px;height:15px;color:var(--primary)}
+  .mk .route .strat .sd{font-size:12px;color:var(--muted-foreground);margin-top:4px;line-height:1.5}
+  .mk .bcta{position:relative;overflow:hidden;text-align:center;padding:84px 0;border-bottom:1px solid var(--border);background:radial-gradient(660px 320px at 50% 118%,color-mix(in oklch,var(--primary) 22%,transparent),transparent 70%)}
+  .mk .bcta h2{font-size:clamp(25px,3.4vw,36px);letter-spacing:-.022em;font-weight:700;margin-bottom:12px}
+  .mk .bcta p{color:var(--muted-foreground);margin-bottom:28px}
+  @media (max-width:920px){.mk .hero .row{grid-template-columns:1fr;gap:36px}.mk .stats{grid-template-columns:repeat(2,1fr)}.mk .pgrid,.mk .steps,.mk .route{grid-template-columns:1fr}.mk .route .col+.col{border-left:0;border-top:1px solid var(--border)}.mk .hero{padding:64px 0 52px}.mk .sec{padding:60px 0}}
+  @media (prefers-reduced-motion:reduce){.mk *{transition:none!important;animation:none!important}}
+  </style>
+
+  <div class="mk">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="wrap" style="position:relative">
+      <div class="row">
+        <div>
+          <span class="eyebrow"><span class="live"></span> Dubai-deployed · USD billing · online</span>
+          <h1>Your unified gateway to the <span class="grad">world's leading AI models</span>.</h1>
+          <p class="lead">One OpenAI-compatible endpoint for Claude, GPT, Gemini and more — routed, billed per token in USD, and topped up with redemption codes. No setup tax, just keys that work.</p>
+          <div class="btns">
+            <a class="btn btn-primary" href="/login">Get started
+              <svg class="arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a class="btn btn-ghost" href="/pricing">View pricing
+              <svg class="arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a class="btn btn-ghost" href="/chat2link">Try playground
+              <svg class="arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+          <div class="micro">
+            <span class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> OpenAI-compatible</span>
+            <span class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Pay-as-you-go</span>
+            <span class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> No card required</span>
+          </div>
+        </div>
+
+        <div class="term">
+          <div class="bar">
+            <span class="d r"></span><span class="d y"></span><span class="d g"></span>
+            <span class="ttl">musk · bash</span>
+          </div>
+<pre><span class="c"># 1. set your key once</span>
+<span class="k">export</span> MUSK_API_KEY=<span class="s">"sk-musk-..."</span>
+
+<span class="c"># 2. call any model through one endpoint</span>
+curl https://db.muskapis.com/v1/chat/completions \
+  -H <span class="s">"Authorization: Bearer $MUSK_API_KEY"</span> \
+  -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{
+    "model": "claude-sonnet-5",
+    "messages": [
+      {"role": "user", "content": "Plan a Dubai launch"}
+    ]
+  }'</span>
+
+<span class="c"># → streams tokens, billed per token in USD</span>
+<span class="p">{ "model": "claude-sonnet-5", "usage": { ... } }</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STATS ============ -->
+  <section class="stats">
+    <div class="s"><div class="n">24<span class="u">+</span></div><div class="l">Models routed</div></div>
+    <div class="s"><div class="n">99.9<span class="u">%</span></div><div class="l">Service uptime</div></div>
+    <div class="s"><div class="n">OpenAI</div><div class="l">Compatible API</div></div>
+    <div class="s"><div class="n">USD</div><div class="l">Pay-as-you-go</div></div>
+  </section>
+
+  <!-- ============ MODELS ============ -->
+  <section class="sec" id="models">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow"><span class="live"></span> Models</span>
+        <h2>Every leading model, one endpoint</h2>
+        <p class="sub">Switch models by changing a single string. Live per-token pricing and limits live on the pricing page.</p>
+      </div>
+
+      <div class="grp-label">Anthropic · Claude</div>
+      <div class="mgrid">
+        <div class="mcard"><div class="mrow"><span class="mname">claude-fable-5</span><span class="prov flag">New</span></div><p class="mdesc">Newest model for complex coding, agent tasks and deep analysis.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>200K</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/></svg> Mid latency</span></div><div class="tags"><span class="tag">Agent</span><span class="tag">Code</span><span class="tag">Reasoning</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">claude-opus-4-8</span><span class="prov flag">Flagship</span></div><p class="mdesc">Top overall capability for hard coding and architecture design.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>200K</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> High latency</span></div><div class="tags"><span class="tag">Reasoning</span><span class="tag">Code</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">claude-opus-4-7</span><span class="prov flag">Flagship</span></div><p class="mdesc">Deep reasoning for long-form processing and code review.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>200K</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> High latency</span></div><div class="tags"><span class="tag">Reasoning</span><span class="tag">Long ctx</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">claude-opus-4-6</span><span class="prov">Flagship</span></div><p class="mdesc">Previous-gen flagship for complex tasks and code review.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>200K</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> High latency</span></div><div class="tags"><span class="tag">Reasoning</span><span class="tag">Code</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">claude-sonnet-5</span><span class="prov">Balanced</span></div><p class="mdesc">Near-flagship balance for daily coding, agents and chat.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>200K</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Mid latency</span></div><div class="tags"><span class="tag">Code</span><span class="tag">Agent</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">claude-sonnet-4-6</span><span class="prov">Balanced</span></div><p class="mdesc">Speed-quality balance for docs, chat and general use.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>200K</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Low latency</span></div><div class="tags"><span class="tag">Balanced</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">claude-haiku-4-5</span><span class="prov">Lite</span></div><p class="mdesc">Lightweight, lowest cost for simple Q&amp;A and batch.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>200K</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Very low</span></div><div class="tags"><span class="tag">Fast</span><span class="tag">Low cost</span></div></div>
+      </div>
+
+      <div class="grp-label">OpenAI · GPT</div>
+      <div class="mgrid">
+        <div class="mcard"><div class="mrow"><span class="mname">gpt-5.6-sol</span><span class="prov flag">Flagship</span></div><p class="mdesc">Latest 5.6 flagship for complex reasoning and creative writing.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>256K</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> High latency</span></div><div class="tags"><span class="tag">Reasoning</span><span class="tag">Code</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">gpt-5.6-terra</span><span class="prov">Balanced</span></div><p class="mdesc">Latest 5.6 balanced for daily coding and general tasks.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>256K</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Mid latency</span></div><div class="tags"><span class="tag">Code</span><span class="tag">Balanced</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">gpt-5.6-luna</span><span class="prov">Lite</span></div><p class="mdesc">Latest 5.6 lightweight for quick Q&amp;A and batch.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>128K</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Low latency</span></div><div class="tags"><span class="tag">Fast</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">gpt-5.5</span><span class="prov flag">Flagship</span></div><p class="mdesc">Strong all-around reasoning, coding and creative writing.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>256K</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> High latency</span></div><div class="tags"><span class="tag">Reasoning</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">gpt-5.4</span><span class="prov flag">Flagship</span></div><p class="mdesc">Codex-fused coding ability for pro document work.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>256K</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Mid latency</span></div><div class="tags"><span class="tag">Code</span><span class="tag">Codex</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">gpt-5.4-mini</span><span class="prov">Lite</span></div><p class="mdesc">Fast and high value for everyday Q&amp;A and batch.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>128K</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Low latency</span></div><div class="tags"><span class="tag">Fast</span><span class="tag">Low cost</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">gpt-image-2</span><span class="prov">Image</span></div><p class="mdesc">Image generation and creative design.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m21 15-5-5L5 21"/></svg> <b>1024²</b> out</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Per-image</span></div><div class="tags"><span class="tag">Image</span></div></div>
+      </div>
+
+      <div class="grp-label">Google · Gemini</div>
+      <div class="mgrid">
+        <div class="mcard"><div class="mrow"><span class="mname">gemini-3.5-flash</span><span class="prov">Balanced</span></div><p class="mdesc">New-gen speed-plus-capability with multimodal understanding.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>1M</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Low latency</span></div><div class="tags"><span class="tag">Vision</span><span class="tag">Fast</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">gemini-3.1-pro-preview</span><span class="prov flag">Flagship</span></div><p class="mdesc">Long-context flagship for deep analysis and long documents.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>1M</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> High latency</span></div><div class="tags"><span class="tag">Reasoning</span><span class="tag">Long ctx</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">gemini-3-flash</span><span class="prov">Lite</span></div><p class="mdesc">Fast response, high value for daily chat and batch.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>1M</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Very low</span></div><div class="tags"><span class="tag">Fast</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">gemini-3.1-flash-lite-preview</span><span class="prov">Lite</span></div><p class="mdesc">Ultra-light, lowest cost for high-frequency calls.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>1M</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Very low</span></div><div class="tags"><span class="tag">Low cost</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">gemini-3-pro-image-preview</span><span class="prov">Image</span></div><p class="mdesc">Flagship image generation, high quality creative design.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m21 15-5-5L5 21"/></svg> <b>2K²</b> out</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Per-image</span></div><div class="tags"><span class="tag">Image</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">gemini-3.1-flash-image-preview</span><span class="prov">Image</span></div><p class="mdesc">Fast image generation for prototyping.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m21 15-5-5L5 21"/></svg> <b>1024²</b> out</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Per-image</span></div><div class="tags"><span class="tag">Image</span><span class="tag">Fast</span></div></div>
+      </div>
+
+      <div class="grp-label">Other models</div>
+      <div class="mgrid">
+        <div class="mcard"><div class="mrow"><span class="mname">deepseek-v4-pro</span><span class="prov flag">Flagship</span></div><p class="mdesc">DeepSeek flagship for reasoning and coding.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>128K</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Mid latency</span></div><div class="tags"><span class="tag">DeepSeek</span><span class="tag">Reasoning</span><span class="tag">Code</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">glm-5.2 / glm-5.1</span><span class="prov">General</span></div><p class="mdesc">Zhipu GLM for general-purpose tasks.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>128K</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Low latency</span></div><div class="tags"><span class="tag">Zhipu GLM</span><span class="tag">General</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">kimi-k2.6</span><span class="prov">Agent</span></div><p class="mdesc">Moonshot Kimi for long text and agent tasks.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>2M</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Mid latency</span></div><div class="tags"><span class="tag">Moonshot</span><span class="tag">Long ctx</span><span class="tag">Agent</span></div></div>
+        <div class="mcard"><div class="mrow"><span class="mname">qwen3.7-max</span><span class="prov flag">Flagship</span></div><p class="mdesc">Alibaba Qwen flagship for all-around tasks.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>256K</b> ctx</span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Low latency</span></div><div class="tags"><span class="tag">Alibaba</span><span class="tag">Multilingual</span></div></div>
+      </div>
+
+      <div class="more-bar">
+        <div>
+          <div class="t">Models above are examples</div>
+          <div class="ds">The actual list and live per-token pricing come straight from your backend.</div>
+        </div>
+        <a class="btn btn-ghost" href="/pricing">Full list &amp; pricing
+          <svg class="arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ROUTING ============ -->
+  <section class="sec" id="routing">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow"><span class="live"></span> Smart routing</span>
+        <h2>Connect once, route across every model</h2>
+        <p class="sub">Expose one stable API to your product while Musk keeps provider-specific endpoints, credentials and fallbacks behind a single control plane. No scattered SDKs, no scattered keys.</p>
+      </div>
+
+      <div class="route">
+        <div class="col">
+          <h3>How a request flows</h3>
+          <p class="desc">Every call is policy-aware: Musk inspects cost, latency, availability and task type, then picks the best path — and reroutes on failure without your code noticing.</p>
+          <div class="flow">
+            <div class="node">
+              <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg></span>
+              Your request → one endpoint
+              <span class="arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </div>
+            <div class="node">
+              <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></span>
+              Routing engine evaluates policy
+              <span class="arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </div>
+            <div class="node">
+              <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg></span>
+              Best provider selected &amp; retried
+              <span class="arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            </div>
+            <div class="node">
+              <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 3-4 3 3 5-6"/></svg></span>
+              Response &amp; usage logged to console
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <h3>Routing strategies</h3>
+          <p class="desc">Choose how Musk picks the best path — by cost, latency, availability, task type or context requirements. Failures trigger automatic fallbacks and provider health checks.</p>
+          <div class="strats">
+            <div class="strat">
+              <div class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Cost-aware</div>
+              <div class="sd">Route to the cheapest capable model that meets your quality bar.</div>
+            </div>
+            <div class="strat">
+              <div class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg> Low-latency</div>
+              <div class="sd">Pick the fastest first-token model for chat and real-time UX.</div>
+            </div>
+            <div class="strat">
+              <div class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> Long-context</div>
+              <div class="sd">Send large inputs to models with the widest context windows.</div>
+            </div>
+            <div class="strat">
+              <div class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m21 15-5-5L5 21"/></svg> Vision-fallback</div>
+              <div class="sd">Fall back to multimodal models when text-only providers reject images.</div>
+            </div>
+          </div>
+          <div class="more-bar" style="margin-top:18px;padding:16px 18px">
+            <div>
+              <div class="t" style="font-size:14px">Built-in reliability</div>
+              <div class="ds">Retries, fallbacks and provider health checks on every route decision.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURES ============ -->
+  <section class="sec" id="features">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow"><span class="live"></span> Why Musk</span>
+        <h2>Built to be the only key you need</h2>
+        <p class="sub">A clean OpenAI-compatible surface over a routed, metered backend.</p>
+      </div>
+      <div class="fgrid">
+        <div class="fcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg></div>
+          <h3>OpenAI-compatible</h3>
+          <p>Drop-in for any SDK or client built for OpenAI. Same paths, same shapes, same streaming.</p>
+        </div>
+        <div class="fcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v6M18 9a3 3 0 1 0-5.8-1M18 15a3 3 0 1 1-5.8 1"/></svg></div>
+          <h3>Model routing</h3>
+          <p>Weighted, retried, auto-disabled channels. Pick the model, we handle failover and load.</p>
+        </div>
+        <div class="fcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <h3>Usage-based billing</h3>
+          <p>Per-token accounting in USD. No subscriptions, no seat fees, no lock-in.</p>
+        </div>
+        <div class="fcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4M4 6v14a2 2 0 0 0 2 2h14v-4M18 16v6M21 19h-6"/></svg></div>
+          <h3>Redemption top-up</h3>
+          <p>Reload balance instantly with redemption codes — no payment gateway required.</p>
+        </div>
+        <div class="fcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 14l3-4 3 3 5-6"/></svg></div>
+          <h3>Transparent logs</h3>
+          <p>Per-request usage, cost and cache-hit stats visible in your console dashboard.</p>
+        </div>
+        <div class="fcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+          <h3>Keys &amp; limits</h3>
+          <p>Token grouping, model restrictions and per-user rate limits out of the box.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRICING ============ -->
+  <section class="sec" id="pricing">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow"><span class="live"></span> Pricing</span>
+        <h2>Simple, usage-based pricing</h2>
+        <p class="sub">You only pay for what models actually consume — billed per token, in USD.</p>
+      </div>
+      <div class="pgrid">
+        <div class="pcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 14l3-4 3 3 5-6"/></svg></div>
+          <h3>Transparent rates</h3>
+          <p>Every model's input, output and cache-hit multiplier is published on the pricing page.</p>
+        </div>
+        <div class="pcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4M4 6v14a2 2 0 0 0 2 2h14v-4M18 16v6M21 19h-6"/></svg></div>
+          <h3>Top up with codes</h3>
+          <p>Add balance anytime with redemption codes. No card, no KYC friction to start.</p>
+        </div>
+        <div class="pcard">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m4.5 4.5 15 15"/></svg></div>
+          <h3>No lock-in</h3>
+          <p>No tiers, no subscriptions. Credit stays yours and is spent only as you call.</p>
+        </div>
+      </div>
+      <div class="pcta"><a class="btn btn-primary" href="/pricing">View full pricing
+        <svg class="arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a></div>
+    </div>
+  </section>
+
+  <!-- ============ QUICK START ============ -->
+  <section class="sec" id="quickstart">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow"><span class="live"></span> Quick start</span>
+        <h2>From sign-up to first call in minutes</h2>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="n">1</div><h3>Sign up &amp; grab a key</h3><p>Create an account and mint an API key in the console.</p><a class="lnk" href="/login">Go to login <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        <div class="step"><div class="n">2</div><h3>Top up balance</h3><p>Redeem a code to add USD credit to your wallet.</p><a class="lnk" href="/console/topup">Top up <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        <div class="step"><div class="n">3</div><h3>Call the API</h3><p>Point any OpenAI client at the Musk endpoint and ship.</p><a class="lnk" href="/console">Open console <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="sec" id="faq">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow"><span class="live"></span> FAQ</span>
+        <h2>Frequently asked</h2>
+      </div>
+      <div class="faq">
+        <details open>
+          <summary>How do I pay and add credit? <span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></summary>
+          <div class="a">Balance is added with redemption codes — purchase a code, paste it in the <a href="/console/topup">top-up page</a>, and your USD wallet is credited instantly. No payment gateway or card required to start.</div>
+        </details>
+        <details>
+          <summary>Which models are available? <span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></summary>
+          <div class="a">The full, always-current list with live per-token pricing is on the <a href="/pricing">pricing page</a>. The cards above are illustrative examples; the backend is the source of truth.</div>
+        </details>
+        <details>
+          <summary>Is it OpenAI-compatible? <span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></summary>
+          <div class="a">Yes. The endpoint mirrors the OpenAI Chat Completions schema, so any OpenAI SDK or client works by pointing its base URL at <code>https://db.muskapis.com</code>.</div>
+        </details>
+        <details>
+          <summary>How is usage billed? <span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></summary>
+          <div class="a">Per token, in USD, with separate input, output and cache-hit multipliers per model. Every request's cost is logged in your console with full transparency.</div>
+        </details>
+        <details>
+          <summary>Can I set limits per key? <span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></summary>
+          <div class="a">Yes. Tokens support grouping, model restrictions and rate limits, all configurable from the console.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BOTTOM CTA ============ -->
+  <section class="bcta">
+    <div class="wrap">
+      <h2>Start building on <span class="grad">Musk</span></h2>
+      <p>Grab a key, top up, and route your first request in minutes.</p>
+      <a class="btn btn-primary" href="/login">Get started
+        <svg class="arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </section>
+
+</div>
+
+
+  <!-- ============ /Musk home content ============ -->
+
+  <div class="foot">© 2026 Musk · db.muskapis.com · (this footer is provided by NewAPI in production)</div>
+
+  <div class="toolbar"><button id="themeBtn">☀ Light</button></div>
+  <script>
+    (function(){
+      var html=document.documentElement, btn=document.getElementById('themeBtn');
+      if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){html.classList.add('dark');btn.textContent='☀ Light';}
+      btn.addEventListener('click',function(){var d=html.classList.toggle('dark');btn.textContent=d?'☀ Light':'🌙 Dark';});
+    })();
+  </script>
+</body>
+</html>

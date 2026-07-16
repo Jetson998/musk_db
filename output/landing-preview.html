@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Musk · Unified AI API Gateway</title>
+<meta name="description" content="Your unified gateway to the world's leading AI models. One OpenAI-compatible API. Dubai-deployed, USD billing, redemption-code top-up.">
+<!--
+  Musk Landing — standalone bilingual home page, embedded into NewAPI via iframe
+  (admin sets HomePageContent = this page's URL). All visible text is driven by
+  data-i18n; the i18n engine + theme + postMessage bridge are inlined at the
+  bottom. No build step, no framework.
+-->
+<style>
+  :root{
+    --background: oklch(1 0 0); --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0); --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0); --popover-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.692 0.141 243.716); --primary-foreground: oklch(1 0 0);
+    --secondary: oklch(0.97 0 0); --secondary-foreground: oklch(0.42 0.16 250);
+    --muted: oklch(0.97 0 0); --muted-foreground: oklch(0.49 0 0);
+    --accent-foreground: oklch(0.145 0 0);
+    --success: oklch(0.596 0.145 163.225); --warning: oklch(0.681 0.162 75.834);
+    --info: oklch(0.588 0.158 241.966);
+    --border: oklch(0.93 0 0); --input: oklch(0.93 0 0); --ring: oklch(0.708 0.16 249.003);
+    color-scheme: light;
+  }
+  html.dark{
+    --background: oklch(0.145 0 0); --foreground: oklch(0.985 0 0);
+    --card: oklch(0.208 0 0); --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.208 0 0); --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.708 0.16 249.003); --primary-foreground: oklch(0.145 0 0);
+    --secondary: oklch(0.269 0 0); --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0); --muted-foreground: oklch(0.708 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216); --success: oklch(0.696 0.17 162.48);
+    --warning: oklch(0.769 0.188 70.08); --info: oklch(0.723 0.191 231.715);
+    --border: oklch(1 0 0 / 10%); --input: oklch(1 0 0 / 15%); --ring: oklch(0.708 0.16 249.003);
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--background);color:var(--foreground);
+    font-family:'Public Sans',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    line-height:1.65;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-foreground);padding:7px 14px;border:1px solid var(--border);border-radius:999px;background:color-mix(in oklch,var(--card) 60%,transparent)}
+  .eyebrow .live{width:7px;height:7px;border-radius:999px;background:var(--success);box-shadow:0 0 0 3px color-mix(in oklch,var(--success) 22%,transparent)}
+  .grad{background:linear-gradient(105deg,var(--primary),color-mix(in oklch,var(--primary) 55%,#fff 60%));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  /* landing bar (shown only when NOT in iframe) */
+  .bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 24px;height:60px;border-bottom:1px solid var(--border);background:color-mix(in oklch,var(--background) 82%,transparent);backdrop-filter:blur(10px)}
+  .bar .brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em}
+  .bar .brand .logo{width:26px;height:26px;border-radius:8px;background:var(--primary)}
+  .bar .nav{display:flex;align-items:center;gap:8px}
+  .bar .nav a{color:var(--muted-foreground);font-size:14px;padding:6px 10px;border-radius:8px}
+  .bar .nav a:hover{color:var(--foreground);background:color-mix(in oklch,var(--card) 60%,transparent)}
+  .bar .btn-sm{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:7px 12px;border-radius:9px;border:1px solid var(--border);background:var(--card);color:var(--foreground);cursor:pointer}
+  .bar .btn-sm:hover{border-color:color-mix(in oklch,var(--primary) 45%,var(--border))}
+  .bar .lang button.on{background:var(--primary);color:var(--primary-foreground);border-color:transparent}
+  .iframe-host .bar{display:none}
+
+  /* hero */
+  .hero{position:relative;overflow:hidden;padding:80px 0 72px;border-bottom:1px solid var(--border);
+    background:radial-gradient(820px 480px at 80% -10%, color-mix(in oklch,var(--primary) 26%,transparent), transparent 58%),radial-gradient(640px 360px at 6% 6%, color-mix(in oklch,var(--primary) 14%,transparent), transparent 60%)}
+  .iframe-host .hero{padding-top:72px}
+  .hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:48px 48px;opacity:.20;mask-image:radial-gradient(120% 80% at 50% 0,#000 28%,transparent 74%);-webkit-mask-image:radial-gradient(120% 80% at 50% 0,#000 28%,transparent 74%);pointer-events:none}
+  .hero .row{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  .hero h1{font-size:clamp(34px,5.2vw,60px);line-height:1.04;letter-spacing:-.025em;font-weight:700;margin:22px 0 0;max-width:620px}
+  .hero p.lead{font-size:clamp(16px,1.6vw,18.5px);color:var(--muted-foreground);max-width:560px;margin:22px 0 30px}
+  .btns{display:flex;flex-wrap:wrap;gap:12px}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:15px;padding:13px 24px;border-radius:11px;border:1px solid transparent;transition:transform .18s ease,box-shadow .18s ease,background .18s ease;cursor:pointer}
+  .btn svg{width:16px;height:16px}
+  .btn-primary{background:var(--primary);color:var(--primary-foreground);box-shadow:0 10px 34px -12px color-mix(in oklch,var(--primary) 72%,transparent)}
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 18px 44px -14px color-mix(in oklch,var(--primary) 85%,transparent)}
+  .btn-ghost{background:color-mix(in oklch,var(--card) 60%,transparent);color:var(--foreground);border-color:var(--border)}
+  .btn-ghost:hover{transform:translateY(-1px);border-color:color-mix(in oklch,var(--primary) 50%,var(--border))}
+  .btn .arw{transition:transform .18s ease}
+  .btn:hover .arw{transform:translateX(3px)}
+  .hero .micro{margin-top:24px;display:flex;gap:20px;flex-wrap:wrap;color:var(--muted-foreground);font-size:13px}
+  .hero .micro .it{display:inline-flex;align-items:center;gap:7px}
+  .hero .micro svg{width:15px;height:15px;color:var(--primary)}
+
+  .term{position:relative;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:color-mix(in oklch,var(--background) 78%,#000 22%);box-shadow:0 40px 90px -50px color-mix(in oklch,var(--primary) 40%,#000)}
+  html.dark .term{background:color-mix(in oklch,var(--background) 70%,#000 30%)}
+  .term .tbar{display:flex;align-items:center;gap:7px;padding:12px 16px;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted-foreground)}
+  .term .tbar .d{width:11px;height:11px;border-radius:999px;background:var(--border)}
+  .term .tbar .d.r{background:color-mix(in oklch,#f87171 70%,var(--border))}
+  .term .tbar .d.y{background:color-mix(in oklch,#fbbf24 70%,var(--border))}
+  .term .tbar .d.g{background:color-mix(in oklch,#34d399 70%,var(--border))}
+  .term .tbar .ttl{margin-left:8px}
+  .term pre{margin:0;padding:18px 18px 20px;overflow-x:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.7;color:var(--foreground)}
+  .term .c{color:var(--muted-foreground)}
+  .term .k{color:color-mix(in oklch,var(--primary) 88%,var(--foreground))}
+  .term .s{color:color-mix(in oklch,#34d399 80%,var(--foreground))}
+  .term .p{color:color-mix(in oklch,#fbbf24 80%,var(--foreground))}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-bottom:1px solid var(--border)}
+  .stats .s{background:var(--background);padding:30px 20px;text-align:center}
+  .stats .n{font-size:clamp(23px,3vw,32px);font-weight:700;letter-spacing:-.015em}
+  .stats .n .u{color:var(--muted-foreground);font-weight:600;font-size:.7em;margin-left:2px}
+  .stats .l{font-size:13px;color:var(--muted-foreground);margin-top:6px;letter-spacing:.01em}
+
+  .sec{padding:84px 0;border-bottom:1px solid var(--border)}
+  .sec-head{max-width:680px}
+  .sec h2{font-size:clamp(25px,3.4vw,36px);letter-spacing:-.022em;font-weight:700;margin:18px 0 14px}
+  .sec .sub{color:var(--muted-foreground);font-size:16.5px}
+
+  .grp-label{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--muted-foreground);margin:0 0 18px;letter-spacing:.02em;text-transform:uppercase}
+  .grp-label::after{content:"";flex:1;height:1px;background:var(--border)}
+  .mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(264px,1fr));gap:14px}
+  .mgrid+.grp-label{margin-top:30px}
+  .mcard{position:relative;padding:20px 20px 18px;border:1px solid var(--border);border-radius:14px;background:color-mix(in oklch,var(--card) 84%,transparent);transition:border-color .18s ease,transform .18s ease,box-shadow .22s ease;overflow:hidden}
+  .mcard::before{content:"";position:absolute;inset:0;border-radius:14px;padding:1px;background:linear-gradient(145deg,color-mix(in oklch,var(--primary) 42%,transparent),transparent 55%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .22s ease}
+  .mcard:hover{transform:translateY(-2px);border-color:color-mix(in oklch,var(--primary) 42%,var(--border));box-shadow:0 22px 46px -28px color-mix(in oklch,var(--primary) 62%,#000)}
+  .mcard:hover::before{opacity:1}
+  .mrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .mname{font-size:15.5px;font-weight:600;letter-spacing:-.005em}
+  .prov{font-size:11px;font-weight:600;color:var(--muted-foreground);padding:3px 9px;border:1px solid var(--border);border-radius:999px;white-space:nowrap}
+  .prov.flag{color:color-mix(in oklch,var(--primary) 80%,var(--foreground));border-color:color-mix(in oklch,var(--primary) 38%,var(--border));background:color-mix(in oklch,var(--primary) 10%,transparent)}
+  .mdesc{font-size:13px;color:var(--muted-foreground);margin-top:13px;min-height:36px}
+  .mcard .spec{display:flex;gap:14px;margin-top:13px;padding-top:13px;border-top:1px dashed var(--border);font-size:12px;color:var(--muted-foreground)}
+  .mcard .spec .sp{display:inline-flex;align-items:center;gap:5px}
+  .mcard .spec .sp svg{width:13px;height:13px;color:color-mix(in oklch,var(--primary) 70%,var(--foreground))}
+  .mcard .spec .sp b{color:var(--foreground);font-weight:600}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:15px}
+  .tag{font-size:11px;font-weight:600;color:color-mix(in oklch,var(--primary) 78%,var(--foreground));background:color-mix(in oklch,var(--primary) 11%,transparent);padding:4px 9px;border-radius:6px;border:1px solid color-mix(in oklch,var(--primary) 16%,transparent)}
+  .more-bar{margin-top:34px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:22px 26px;border:1px solid var(--border);border-radius:14px;background:color-mix(in oklch,var(--card) 64%,transparent)}
+  .more-bar .t{font-weight:600}
+  .more-bar .ds{font-size:13px;color:var(--muted-foreground);margin-top:3px}
+
+  .route{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:36px;background:color-mix(in oklch,var(--card) 76%,transparent)}
+  .route .col{padding:32px}
+  .route .col+.col{border-left:1px solid var(--border)}
+  .route h3{font-size:16px;font-weight:600;margin-bottom:14px;letter-spacing:-.005em}
+  .route .desc{font-size:13.5px;color:var(--muted-foreground);margin-bottom:20px;line-height:1.6}
+  .route .flow{display:flex;flex-direction:column;gap:10px}
+  .route .flow .node{display:flex;align-items:center;gap:11px;padding:11px 14px;border:1px solid var(--border);border-radius:11px;background:color-mix(in oklch,var(--background) 60%,transparent);font-size:13px;font-weight:600}
+  .route .flow .node .ic{flex:none;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;background:color-mix(in oklch,var(--primary) 13%,transparent);color:var(--primary);border:1px solid color-mix(in oklch,var(--primary) 18%,transparent)}
+  .route .flow .node .ic svg{width:14px;height:14px}
+  .route .flow .node .arr{margin-left:auto;color:var(--muted-foreground)}
+  .route .flow .node .arr svg{width:16px;height:16px}
+  .route .strats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .route .strat{padding:13px 14px;border:1px solid var(--border);border-radius:11px;background:color-mix(in oklch,var(--background) 55%,transparent)}
+  .route .strat .st{font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+  .route .strat .st svg{width:15px;height:15px;color:var(--primary)}
+  .route .strat .sd{font-size:12px;color:var(--muted-foreground);margin-top:4px;line-height:1.5}
+
+  .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:38px}
+  .fcard{position:relative;padding:24px;border:1px solid var(--border);border-radius:14px;background:color-mix(in oklch,var(--card) 76%,transparent);transition:border-color .18s ease,transform .18s ease}
+  .fcard:hover{transform:translateY(-2px);border-color:color-mix(in oklch,var(--primary) 38%,var(--border))}
+  .fcard .ico{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:color-mix(in oklch,var(--primary) 13%,transparent);color:var(--primary);margin-bottom:16px;border:1px solid color-mix(in oklch,var(--primary) 18%,transparent)}
+  .fcard .ico svg{width:21px;height:21px}
+  .fcard h3{font-size:16px;font-weight:600;margin-bottom:7px;letter-spacing:-.005em}
+  .fcard p{font-size:14px;color:var(--muted-foreground)}
+
+  .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:38px}
+  .pcard{padding:26px;border:1px solid var(--border);border-radius:14px;background:color-mix(in oklch,var(--card) 80%,transparent);transition:border-color .18s ease,transform .18s ease}
+  .pcard:hover{transform:translateY(-2px);border-color:color-mix(in oklch,var(--primary) 38%,var(--border))}
+  .pcard .ico{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;background:color-mix(in oklch,var(--primary) 13%,transparent);color:var(--primary);margin-bottom:16px;border:1px solid color-mix(in oklch,var(--primary) 18%,transparent)}
+  .pcard .ico svg{width:20px;height:20px}
+  .pcard h3{font-size:16px;font-weight:600;margin-bottom:7px}
+  .pcard p{font-size:14px;color:var(--muted-foreground)}
+  .pcta{margin-top:32px}
+
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:38px}
+  .step{position:relative;padding:24px;border:1px solid var(--border);border-radius:14px;background:color-mix(in oklch,var(--card) 76%,transparent)}
+  .step .n{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:13px;font-weight:700;background:var(--primary);color:var(--primary-foreground);margin-bottom:16px}
+  .step h3{font-size:15px;font-weight:600;margin-bottom:6px}
+  .step p{font-size:13px;color:var(--muted-foreground)}
+  .step a.lnk{display:inline-flex;align-items:center;gap:6px;color:var(--primary);font-weight:600;font-size:13px;margin-top:12px}
+  .step a.lnk svg{width:14px;height:14px}
+
+  .faq{margin-top:38px;display:flex;flex-direction:column;gap:10px}
+  .faq details{border:1px solid var(--border);border-radius:12px;background:color-mix(in oklch,var(--card) 68%,transparent);overflow:hidden;transition:border-color .18s ease}
+  .faq details[open]{border-color:color-mix(in oklch,var(--primary) 30%,var(--border))}
+  .faq summary{list-style:none;cursor:pointer;padding:19px 22px;font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary .pm{flex:none;width:22px;height:22px;border-radius:7px;display:grid;place-items:center;border:1px solid var(--border);color:var(--muted-foreground);transition:transform .18s ease,background .18s ease,color .18s ease}
+  .faq summary .pm svg{width:13px;height:13px}
+  .faq details[open] summary .pm{transform:rotate(45deg);border-color:color-mix(in oklch,var(--primary) 50%,var(--border));color:var(--primary)}
+  .faq .a{padding:0 22px 19px;color:var(--muted-foreground);font-size:14.5px}
+  .faq .a a{color:var(--primary);font-weight:600}
+  .faq .a code{font-family:ui-monospace,monospace;font-size:13px;background:color-mix(in oklch,var(--muted) 50%,transparent);padding:2px 6px;border-radius:5px}
+
+  .bcta{position:relative;overflow:hidden;text-align:center;padding:84px 0;border-bottom:1px solid var(--border);background:radial-gradient(660px 320px at 50% 118%,color-mix(in oklch,var(--primary) 22%,transparent),transparent 70%)}
+  .bcta h2{font-size:clamp(25px,3.4vw,36px);letter-spacing:-.022em;font-weight:700;margin-bottom:12px}
+  .bcta p{color:var(--muted-foreground);margin-bottom:28px}
+
+  @media (max-width:920px){
+    .hero .row{grid-template-columns:1fr;gap:36px}
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .pgrid,.steps,.route{grid-template-columns:1fr}
+    .route .col+.col{border-left:0;border-top:1px solid var(--border)}
+    .hero{padding:60px 0 52px}
+    .sec{padding:60px 0}
+    .bar .nav a:not(.nb){display:none}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<!-- ===== Landing bar (hidden when embedded in NewAPI iframe) ===== -->
+<div class="bar" id="bar">
+  <a class="brand" href="/"><span class="logo"></span> Musk</a>
+  <div class="nav">
+    <a href="#models" data-i18n="nav.models">Models</a>
+    <a href="#routing" data-i18n="nav.routing">Routing</a>
+    <a href="#pricing" data-i18n="nav.pricing">Pricing</a>
+    <a href="#faq" data-i18n="nav.faq">FAQ</a>
+    <span class="lang">
+      <button class="btn-sm" data-lang="en" id="langEn">EN</button>
+      <button class="btn-sm" data-lang="zh" id="langZh">中文</button>
+    </span>
+    <button class="btn-sm" id="themeBtn" title="Toggle theme">🌙</button>
+    <a class="btn-sm nb" href="#" data-i18n="nav.signin">Sign in</a>
+    <a class="btn-sm nb" href="#" data-i18n="nav.getstarted">Get started</a>
+  </div>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="wrap" style="position:relative">
+    <div class="row">
+      <div>
+        <span class="eyebrow"><span class="live"></span> <span data-i18n="hero.badge">Dubai-deployed · USD billing · online</span></span>
+        <h1><span data-i18n="hero.title1">Your unified gateway to the</span> <span class="grad" data-i18n="hero.title2">world's leading AI models</span>.</h1>
+        <p class="lead" data-i18n="hero.lead">One OpenAI-compatible endpoint for Claude, GPT, Gemini and more — routed, billed per token in USD, and topped up with redemption codes. No setup tax, just keys that work.</p>
+        <div class="btns">
+          <a class="btn btn-primary" href="https://db.muskapis.com/login" target="_top" data-i18n="hero.cta1">Get started <svg class="arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="btn btn-ghost" href="https://db.muskapis.com/pricing" target="_top" data-i18n="hero.cta2">View pricing <svg class="arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="btn btn-ghost" href="https://db.muskapis.com/chat2link" target="_top" data-i18n="hero.cta3">Try playground <svg class="arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+        <div class="micro">
+          <span class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> <span data-i18n="hero.m1">OpenAI-compatible</span></span>
+          <span class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> <span data-i18n="hero.m2">Pay-as-you-go</span></span>
+          <span class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> <span data-i18n="hero.m3">No card required</span></span>
+        </div>
+      </div>
+
+      <div class="term">
+        <div class="tbar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="ttl">musk · bash</span></div>
+<pre><span class="c"># 1. set your key once</span>
+<span class="k">export</span> MUSK_API_KEY=<span class="s">"sk-musk-..."</span>
+
+<span class="c"># 2. call any model through one endpoint</span>
+curl https://db.muskapis.com/v1/chat/completions \
+  -H <span class="s">"Authorization: Bearer $MUSK_API_KEY"</span> \
+  -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{
+    "model": "claude-sonnet-5",
+    "messages": [
+      {"role": "user", "content": "Hello from Dubai!"}
+    ]
+  }'</span>
+
+<span class="c"># → streams tokens, billed per token in USD</span>
+<span class="p">{ "model": "claude-sonnet-5", "usage": { ... } }</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<section class="stats">
+  <div class="s"><div class="n">24<span class="u">+</span></div><div class="l" data-i18n="stat.models">Models routed</div></div>
+  <div class="s"><div class="n">99.9<span class="u">%</span></div><div class="l" data-i18n="stat.uptime">Service uptime</div></div>
+  <div class="s"><div class="n">OpenAI</div><div class="l" data-i18n="stat.compat">Compatible API</div></div>
+  <div class="s"><div class="n">USD</div><div class="l" data-i18n="stat.pay">Pay-as-you-go</div></div>
+</section>
+
+<!-- ===== MODELS ===== -->
+<section class="sec" id="models">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow"><span class="live"></span> <span data-i18n="models.badge">Models</span></span>
+      <h2 data-i18n="models.title">Every leading model, one endpoint</h2>
+      <p class="sub" data-i18n="models.sub">Switch models by changing a single string. Live per-token pricing and limits live on the pricing page.</p>
+    </div>
+
+    <div class="grp-label">Anthropic · Claude</div>
+    <div class="mgrid">
+      <div class="mcard"><div class="mrow"><span class="mname">claude-fable-5</span><span class="prov flag" data-i18n="tag.new">New</span></div><p class="mdesc" data-i18n="m.fable5">Newest model for complex coding, agent tasks and deep analysis.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>200K</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.mid">Mid latency</span></span></div><div class="tags"><span class="tag" data-i18n="tag.agent">Agent</span><span class="tag" data-i18n="tag.code">Code</span><span class="tag" data-i18n="tag.reasoning">Reasoning</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">claude-opus-4-8</span><span class="prov flag" data-i18n="tag.flagship">Flagship</span></div><p class="mdesc" data-i18n="m.opus48">Top overall capability for hard coding and architecture design.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>200K</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.high">High latency</span></span></div><div class="tags"><span class="tag" data-i18n="tag.reasoning">Reasoning</span><span class="tag" data-i18n="tag.code">Code</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">claude-opus-4-7</span><span class="prov flag" data-i18n="tag.flagship">Flagship</span></div><p class="mdesc" data-i18n="m.opus47">Deep reasoning for long-form processing and code review.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>200K</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.high">High latency</span></span></div><div class="tags"><span class="tag" data-i18n="tag.reasoning">Reasoning</span><span class="tag" data-i18n="tag.longctx">Long ctx</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">claude-opus-4-6</span><span class="prov" data-i18n="tag.flagship">Flagship</span></div><p class="mdesc" data-i18n="m.opus46">Previous-gen flagship for complex tasks and code review.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>200K</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.high">High latency</span></span></div><div class="tags"><span class="tag" data-i18n="tag.reasoning">Reasoning</span><span class="tag" data-i18n="tag.code">Code</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">claude-sonnet-5</span><span class="prov" data-i18n="tag.balanced">Balanced</span></div><p class="mdesc" data-i18n="m.sonnet5">Near-flagship balance for daily coding, agents and chat.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>200K</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.mid">Mid latency</span></span></div><div class="tags"><span class="tag" data-i18n="tag.code">Code</span><span class="tag" data-i18n="tag.agent">Agent</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">claude-sonnet-4-6</span><span class="prov" data-i18n="tag.balanced">Balanced</span></div><p class="mdesc" data-i18n="m.sonnet46">Speed-quality balance for docs, chat and general use.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>200K</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.low">Low latency</span></span></div><div class="tags"><span class="tag" data-i18n="tag.balanced">Balanced</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">claude-haiku-4-5</span><span class="prov" data-i18n="tag.lite">Lite</span></div><p class="mdesc" data-i18n="m.haiku45">Lightweight, lowest cost for simple Q&amp;A and batch.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>200K</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.vlow">Very low</span></span></div><div class="tags"><span class="tag" data-i18n="tag.fast">Fast</span><span class="tag" data-i18n="tag.lowcost">Low cost</span></div></div>
+    </div>
+
+    <div class="grp-label">OpenAI · GPT</div>
+    <div class="mgrid">
+      <div class="mcard"><div class="mrow"><span class="mname">gpt-5.6-sol</span><span class="prov flag" data-i18n="tag.flagship">Flagship</span></div><p class="mdesc" data-i18n="m.sol">Latest 5.6 flagship for complex reasoning and creative writing.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>256K</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.high">High latency</span></span></div><div class="tags"><span class="tag" data-i18n="tag.reasoning">Reasoning</span><span class="tag" data-i18n="tag.code">Code</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">gpt-5.6-terra</span><span class="prov" data-i18n="tag.balanced">Balanced</span></div><p class="mdesc" data-i18n="m.terra">Latest 5.6 balanced for daily coding and general tasks.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>256K</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.mid">Mid latency</span></span></div><div class="tags"><span class="tag" data-i18n="tag.code">Code</span><span class="tag" data-i18n="tag.balanced">Balanced</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">gpt-5.6-luna</span><span class="prov" data-i18n="tag.lite">Lite</span></div><p class="mdesc" data-i18n="m.luna">Latest 5.6 lightweight for quick Q&amp;A and batch.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>128K</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.low">Low latency</span></span></div><div class="tags"><span class="tag" data-i18n="tag.fast">Fast</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">gpt-5.5</span><span class="prov flag" data-i18n="tag.flagship">Flagship</span></div><p class="mdesc" data-i18n="m.gpt55">Strong all-around reasoning, coding and creative writing.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>256K</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.high">High latency</span></span></div><div class="tags"><span class="tag" data-i18n="tag.reasoning">Reasoning</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">gpt-5.4</span><span class="prov flag" data-i18n="tag.flagship">Flagship</span></div><p class="mdesc" data-i18n="m.gpt54">Codex-fused coding ability for pro document work.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>256K</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.mid">Mid latency</span></span></div><div class="tags"><span class="tag" data-i18n="tag.code">Code</span><span class="tag">Codex</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">gpt-5.4-mini</span><span class="prov" data-i18n="tag.lite">Lite</span></div><p class="mdesc" data-i18n="m.gpt54mini">Fast and high value for everyday Q&amp;A and batch.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>128K</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.low">Low latency</span></span></div><div class="tags"><span class="tag" data-i18n="tag.fast">Fast</span><span class="tag" data-i18n="tag.lowcost">Low cost</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">gpt-image-2</span><span class="prov" data-i18n="tag.image">Image</span></div><p class="mdesc" data-i18n="m.gptimage2">Image generation and creative design.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m21 15-5-5L5 21"/></svg> <b>1024²</b> <span data-i18n="spec.out">out</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="spec.perimg">Per-image</span></span></div><div class="tags"><span class="tag" data-i18n="tag.image">Image</span></div></div>
+    </div>
+
+    <div class="grp-label">Google · Gemini</div>
+    <div class="mgrid">
+      <div class="mcard"><div class="mrow"><span class="mname">gemini-3.5-flash</span><span class="prov" data-i18n="tag.balanced">Balanced</span></div><p class="mdesc" data-i18n="m.gem35flash">New-gen speed-plus-capability with multimodal understanding.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>1M</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.low">Low latency</span></span></div><div class="tags"><span class="tag" data-i18n="tag.vision">Vision</span><span class="tag" data-i18n="tag.fast">Fast</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">gemini-3.1-pro-preview</span><span class="prov flag" data-i18n="tag.flagship">Flagship</span></div><p class="mdesc" data-i18n="m.gem31pro">Long-context flagship for deep analysis and long documents.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>1M</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.high">High latency</span></span></div><div class="tags"><span class="tag" data-i18n="tag.reasoning">Reasoning</span><span class="tag" data-i18n="tag.longctx">Long ctx</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">gemini-3-flash</span><span class="prov" data-i18n="tag.lite">Lite</span></div><p class="mdesc" data-i18n="m.gem3flash">Fast response, high value for daily chat and batch.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>1M</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.vlow">Very low</span></span></div><div class="tags"><span class="tag" data-i18n="tag.fast">Fast</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">gemini-3.1-flash-lite-preview</span><span class="prov" data-i18n="tag.lite">Lite</span></div><p class="mdesc" data-i18n="m.gem31litelite">Ultra-light, lowest cost for high-frequency calls.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>1M</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.vlow">Very low</span></span></div><div class="tags"><span class="tag" data-i18n="tag.lowcost">Low cost</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">gemini-3-pro-image-preview</span><span class="prov" data-i18n="tag.image">Image</span></div><p class="mdesc" data-i18n="m.gem3proimg">Flagship image generation, high quality creative design.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m21 15-5-5L5 21"/></svg> <b>2K²</b> <span data-i18n="spec.out">out</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="spec.perimg">Per-image</span></span></div><div class="tags"><span class="tag" data-i18n="tag.image">Image</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">gemini-3.1-flash-image-preview</span><span class="prov" data-i18n="tag.image">Image</span></div><p class="mdesc" data-i18n="m.gem31flashimg">Fast image generation for prototyping.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m21 15-5-5L5 21"/></svg> <b>1024²</b> <span data-i18n="spec.out">out</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="spec.perimg">Per-image</span></span></div><div class="tags"><span class="tag" data-i18n="tag.image">Image</span><span class="tag" data-i18n="tag.fast">Fast</span></div></div>
+    </div>
+
+    <div class="grp-label" data-i18n="grp.other">Other models</div>
+    <div class="mgrid">
+      <div class="mcard"><div class="mrow"><span class="mname">deepseek-v4-pro</span><span class="prov flag" data-i18n="tag.flagship">Flagship</span></div><p class="mdesc" data-i18n="m.dsv4pro">DeepSeek flagship for reasoning and coding.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>128K</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.mid">Mid latency</span></span></div><div class="tags"><span class="tag">DeepSeek</span><span class="tag" data-i18n="tag.reasoning">Reasoning</span><span class="tag" data-i18n="tag.code">Code</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">glm-5.2 / glm-5.1</span><span class="prov" data-i18n="tag.general">General</span></div><p class="mdesc" data-i18n="m.glm">Zhipu GLM for general-purpose tasks.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>128K</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.low">Low latency</span></span></div><div class="tags"><span class="tag">Zhipu GLM</span><span class="tag" data-i18n="tag.general">General</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">kimi-k2.6</span><span class="prov" data-i18n="tag.agent">Agent</span></div><p class="mdesc" data-i18n="m.kimi">Moonshot Kimi for long text and agent tasks.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>2M</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.mid">Mid latency</span></span></div><div class="tags"><span class="tag">Moonshot</span><span class="tag" data-i18n="tag.longctx">Long ctx</span><span class="tag" data-i18n="tag.agent">Agent</span></div></div>
+      <div class="mcard"><div class="mrow"><span class="mname">qwen3.7-max</span><span class="prov flag" data-i18n="tag.flagship">Flagship</span></div><p class="mdesc" data-i18n="m.qwen">Alibaba Qwen flagship for all-around tasks.</p><div class="spec"><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <b>256K</b> <span data-i18n="spec.ctx">ctx</span></span><span class="sp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> <span data-i18n="lat.low">Low latency</span></span></div><div class="tags"><span class="tag">Alibaba</span><span class="tag" data-i18n="tag.multi">Multilingual</span></div></div>
+    </div>
+
+    <div class="more-bar">
+      <div>
+        <div class="t" data-i18n="models.more.t">Models above are examples</div>
+        <div class="ds" data-i18n="models.more.s">The actual list and live per-token pricing come straight from your backend.</div>
+      </div>
+      <a class="btn btn-ghost" href="https://db.muskapis.com/pricing" target="_top"><span data-i18n="models.more.btn">Full list &amp; pricing</span> <svg class="arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ROUTING ===== -->
+<section class="sec" id="routing">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow"><span class="live"></span> <span data-i18n="routing.badge">Smart routing</span></span>
+      <h2 data-i18n="routing.title">Connect once, route across every model</h2>
+      <p class="sub" data-i18n="routing.sub">Expose one stable API to your product while Musk keeps provider-specific endpoints, credentials and fallbacks behind a single control plane. No scattered SDKs, no scattered keys.</p>
+    </div>
+    <div class="route">
+      <div class="col">
+        <h3 data-i18n="routing.flow.title">How a request flows</h3>
+        <p class="desc" data-i18n="routing.flow.desc">Every call is policy-aware: Musk inspects cost, latency, availability and task type, then picks the best path — and reroutes on failure without your code noticing.</p>
+        <div class="flow">
+          <div class="node"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg></span><span data-i18n="routing.f1">Your request → one endpoint</span><span class="arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="node"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></span><span data-i18n="routing.f2">Routing engine evaluates policy</span><span class="arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="node"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg></span><span data-i18n="routing.f3">Best provider selected &amp; retried</span><span class="arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="node"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 3-4 3 3 5-6"/></svg></span><span data-i18n="routing.f4">Response &amp; usage logged to console</span></div>
+        </div>
+      </div>
+      <div class="col">
+        <h3 data-i18n="routing.strats.title">Routing strategies</h3>
+        <p class="desc" data-i18n="routing.strats.desc">Choose how Musk picks the best path — by cost, latency, availability, task type or context requirements. Failures trigger automatic fallbacks and provider health checks.</p>
+        <div class="strats">
+          <div class="strat"><div class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> <span data-i18n="route.cost">Cost-aware</span></div><div class="sd" data-i18n="route.cost.d">Route to the cheapest capable model that meets your quality bar.</div></div>
+          <div class="strat"><div class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg> <span data-i18n="route.lowlat">Low-latency</span></div><div class="sd" data-i18n="route.lowlat.d">Pick the fastest first-token model for chat and real-time UX.</div></div>
+          <div class="strat"><div class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg> <span data-i18n="route.longctx">Long-context</span></div><div class="sd" data-i18n="route.longctx.d">Send large inputs to models with the widest context windows.</div></div>
+          <div class="strat"><div class="st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m21 15-5-5L5 21"/></svg> <span data-i18n="route.visionfb">Vision-fallback</span></div><div class="sd" data-i18n="route.visionfb.d">Fall back to multimodal models when text-only providers reject images.</div></div>
+        </div>
+        <div class="more-bar" style="margin-top:18px;padding:16px 18px">
+          <div>
+            <div class="t" style="font-size:14px" data-i18n="routing.rel.t">Built-in reliability</div>
+            <div class="ds" data-i18n="routing.rel.s">Retries, fallbacks and provider health checks on every route decision.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section class="sec" id="features">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow"><span class="live"></span> <span data-i18n="feat.badge">Why Musk</span></span>
+      <h2 data-i18n="feat.title">Built to be the only key you need</h2>
+      <p class="sub" data-i18n="feat.sub">A clean OpenAI-compatible surface over a routed, metered backend.</p>
+    </div>
+    <div class="fgrid">
+      <div class="fcard"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg></div><h3 data-i18n="feat.f1.t">OpenAI-compatible</h3><p data-i18n="feat.f1.d">Drop-in for any SDK or client built for OpenAI. Same paths, same shapes, same streaming.</p></div>
+      <div class="fcard"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v6M18 9a3 3 0 1 0-5.8-1M18 15a3 3 0 1 1-5.8 1"/></svg></div><h3 data-i18n="feat.f2.t">Model routing</h3><p data-i18n="feat.f2.d">Weighted, retried, auto-disabled channels. Pick the model, we handle failover and load.</p></div>
+      <div class="fcard"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><h3 data-i18n="feat.f3.t">Usage-based billing</h3><p data-i18n="feat.f3.d">Per-token accounting in USD. No subscriptions, no seat fees, no lock-in.</p></div>
+      <div class="fcard"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4M4 6v14a2 2 0 0 0 2 2h14v-4M18 16v6M21 19h-6"/></svg></div><h3 data-i18n="feat.f4.t">Redemption top-up</h3><p data-i18n="feat.f4.d">Reload balance instantly with redemption codes — no payment gateway required.</p></div>
+      <div class="fcard"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 14l3-4 3 3 5-6"/></svg></div><h3 data-i18n="feat.f5.t">Transparent logs</h3><p data-i18n="feat.f5.d">Per-request usage, cost and cache-hit stats visible in your console dashboard.</p></div>
+      <div class="fcard"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg></div><h3 data-i18n="feat.f6.t">Keys &amp; limits</h3><p data-i18n="feat.f6.d">Token grouping, model restrictions and per-user rate limits out of the box.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section class="sec" id="pricing">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow"><span class="live"></span> <span data-i18n="price.badge">Pricing</span></span>
+      <h2 data-i18n="price.title">Simple, usage-based pricing</h2>
+      <p class="sub" data-i18n="price.sub">You only pay for what models actually consume — billed per token, in USD.</p>
+    </div>
+    <div class="pgrid">
+      <div class="pcard"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 14l3-4 3 3 5-6"/></svg></div><h3 data-i18n="price.p1.t">Transparent rates</h3><p data-i18n="price.p1.d">Every model's input, output and cache-hit multiplier is published on the pricing page.</p></div>
+      <div class="pcard"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4M4 6v14a2 2 0 0 0 2 2h14v-4M18 16v6M21 19h-6"/></svg></div><h3 data-i18n="price.p2.t">Top up with codes</h3><p data-i18n="price.p2.d">Add balance anytime with redemption codes. No card, no KYC friction to start.</p></div>
+      <div class="pcard"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m4.5 4.5 15 15"/></svg></div><h3 data-i18n="price.p3.t">No lock-in</h3><p data-i18n="price.p3.d">No tiers, no subscriptions. Credit stays yours and is spent only as you call.</p></div>
+    </div>
+    <div class="pcta"><a class="btn btn-primary" href="https://db.muskapis.com/pricing" target="_top"><span data-i18n="price.cta">View full pricing</span> <svg class="arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+  </div>
+</section>
+
+<!-- ===== QUICK START ===== -->
+<section class="sec" id="quickstart">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow"><span class="live"></span> <span data-i18n="qs.badge">Quick start</span></span>
+      <h2 data-i18n="qs.title">From sign-up to first call in minutes</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3 data-i18n="qs.s1.t">Sign up &amp; grab a key</h3><p data-i18n="qs.s1.d">Create an account and mint an API key in the console.</p><a class="lnk" href="https://db.muskapis.com/login" target="_top"><span data-i18n="qs.s1.l">Go to login</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+      <div class="step"><div class="n">2</div><h3 data-i18n="qs.s2.t">Top up balance</h3><p data-i18n="qs.s2.d">Redeem a code to add USD credit to your wallet.</p><a class="lnk" href="https://db.muskapis.com/console/topup" target="_top"><span data-i18n="qs.s2.l">Top up</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+      <div class="step"><div class="n">3</div><h3 data-i18n="qs.s3.t">Call the API</h3><p data-i18n="qs.s3.d">Point any OpenAI client at the Musk endpoint and ship.</p><a class="lnk" href="https://db.muskapis.com/console" target="_top"><span data-i18n="qs.s3.l">Open console</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="sec" id="faq">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow"><span class="live"></span> <span data-i18n="faq.badge">FAQ</span></span>
+      <h2 data-i18n="faq.title">Frequently asked</h2>
+    </div>
+    <div class="faq">
+      <details open><summary><span data-i18n="faq.q1">How do I pay and add credit?</span> <span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></summary><div class="a" data-i18n="faq.a1">Balance is added with redemption codes — purchase a code, paste it in the top-up page, and your USD wallet is credited instantly. No payment gateway or card required to start.</div></details>
+      <details><summary><span data-i18n="faq.q2">Which models are available?</span> <span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></summary><div class="a" data-i18n="faq.a2">The full, always-current list with live per-token pricing is on the pricing page. The cards above are illustrative examples; the backend is the source of truth.</div></details>
+      <details><summary><span data-i18n="faq.q3">Is it OpenAI-compatible?</span> <span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></summary><div class="a" data-i18n="faq.a3">Yes. The endpoint mirrors the OpenAI Chat Completions schema, so any OpenAI SDK or client works by pointing its base URL at https://db.muskapis.com.</div></details>
+      <details><summary><span data-i18n="faq.q4">How is usage billed?</span> <span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></summary><div class="a" data-i18n="faq.a4">Per token, in USD, with separate input, output and cache-hit multipliers per model. Every request's cost is logged in your console with full transparency.</div></details>
+      <details><summary><span data-i18n="faq.q5">Can I set limits per key?</span> <span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></summary><div class="a" data-i18n="faq.a5">Yes. Tokens support grouping, model restrictions and rate limits, all configurable from the console.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BOTTOM CTA ===== -->
+<section class="bcta">
+  <div class="wrap">
+    <h2><span data-i18n="bcta.title">Start building on</span> <span class="grad">Musk</span></h2>
+    <p data-i18n="bcta.sub">Grab a key, top up, and route your first request in minutes.</p>
+    <a class="btn btn-primary" href="https://db.muskapis.com/login" target="_top"><span data-i18n="bcta.cta">Get started</span> <svg class="arw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </div>
+</section>
+
+<script>
+(function(){
+  "use strict";
+  var NEWAPI_BASE = "https://db.muskapis.com"; // 上线时改你的真实 NewAPI 域名
+
+  // ---------- i18n dictionary ----------
+  var I18N = {
+    en: {
+      "nav.models":"Models","nav.routing":"Routing","nav.pricing":"Pricing","nav.faq":"FAQ",
+      "nav.signin":"Sign in","nav.getstarted":"Get started",
+      "hero.badge":"Dubai-deployed · USD billing · online",
+      "hero.title1":"Your unified gateway to the",
+      "hero.title2":"world's leading AI models",
+      "hero.lead":"One OpenAI-compatible endpoint for Claude, GPT, Gemini and more — routed, billed per token in USD, and topped up with redemption codes. No setup tax, just keys that work.",
+      "hero.cta1":"Get started","hero.cta2":"View pricing","hero.cta3":"Try playground",
+      "hero.m1":"OpenAI-compatible","hero.m2":"Pay-as-you-go","hero.m3":"No card required",
+      "stat.models":"Models routed","stat.uptime":"Service uptime","stat.compat":"Compatible API","stat.pay":"Pay-as-you-go",
+      "models.badge":"Models","models.title":"Every leading model, one endpoint",
+      "models.sub":"Switch models by changing a single string. Live per-token pricing and limits live on the pricing page.",
+      "models.more.t":"Models above are examples","models.more.s":"The actual list and live per-token pricing come straight from your backend.","models.more.btn":"Full list & pricing",
+      "tag.new":"New","tag.flagship":"Flagship","tag.balanced":"Balanced","tag.lite":"Lite","tag.image":"Image","tag.agent":"Agent","tag.general":"General",
+      "tag.code":"Code","tag.reasoning":"Reasoning","tag.longctx":"Long ctx","tag.fast":"Fast","tag.lowcost":"Low cost","tag.vision":"Vision","tag.multi":"Multilingual",
+      "spec.ctx":"ctx","spec.out":"out","spec.perimg":"Per-image",
+      "lat.mid":"Mid latency","lat.high":"High latency","lat.low":"Low latency","lat.vlow":"Very low",
+      "grp.other":"Other models",
+      "m.fable5":"Newest model for complex coding, agent tasks and deep analysis.",
+      "m.opus48":"Top overall capability for hard coding and architecture design.",
+      "m.opus47":"Deep reasoning for long-form processing and code review.",
+      "m.opus46":"Previous-gen flagship for complex tasks and code review.",
+      "m.sonnet5":"Near-flagship balance for daily coding, agents and chat.",
+      "m.sonnet46":"Speed-quality balance for docs, chat and general use.",
+      "m.haiku45":"Lightweight, lowest cost for simple Q&A and batch.",
+      "m.sol":"Latest 5.6 flagship for complex reasoning and creative writing.",
+      "m.terra":"Latest 5.6 balanced for daily coding and general tasks.",
+      "m.luna":"Latest 5.6 lightweight for quick Q&A and batch.",
+      "m.gpt55":"Strong all-around reasoning, coding and creative writing.",
+      "m.gpt54":"Codex-fused coding ability for pro document work.",
+      "m.gpt54mini":"Fast and high value for everyday Q&A and batch.",
+      "m.gptimage2":"Image generation and creative design.",
+      "m.gem35flash":"New-gen speed-plus-capability with multimodal understanding.",
+      "m.gem31pro":"Long-context flagship for deep analysis and long documents.",
+      "m.gem3flash":"Fast response, high value for daily chat and batch.",
+      "m.gem31litelite":"Ultra-light, lowest cost for high-frequency calls.",
+      "m.gem3proimg":"Flagship image generation, high quality creative design.",
+      "m.gem31flashimg":"Fast image generation for prototyping.",
+      "m.dsv4pro":"DeepSeek flagship for reasoning and coding.",
+      "m.glm":"Zhipu GLM for general-purpose tasks.",
+      "m.kimi":"Moonshot Kimi for long text and agent tasks.",
+      "m.qwen":"Alibaba Qwen flagship for all-around tasks.",
+      "routing.badge":"Smart routing","routing.title":"Connect once, route across every model",
+      "routing.sub":"Expose one stable API to your product while Musk keeps provider-specific endpoints, credentials and fallbacks behind a single control plane. No scattered SDKs, no scattered keys.",
+      "routing.flow.title":"How a request flows",
+      "routing.flow.desc":"Every call is policy-aware: Musk inspects cost, latency, availability and task type, then picks the best path — and reroutes on failure without your code noticing.",
+      "routing.f1":"Your request → one endpoint","routing.f2":"Routing engine evaluates policy","routing.f3":"Best provider selected & retried","routing.f4":"Response & usage logged to console",
+      "routing.strats.title":"Routing strategies",
+      "routing.strats.desc":"Choose how Musk picks the best path — by cost, latency, availability, task type or context requirements. Failures trigger automatic fallbacks and provider health checks.",
+      "route.cost":"Cost-aware","route.cost.d":"Route to the cheapest capable model that meets your quality bar.",
+      "route.lowlat":"Low-latency","route.lowlat.d":"Pick the fastest first-token model for chat and real-time UX.",
+      "route.longctx":"Long-context","route.longctx.d":"Send large inputs to models with the widest context windows.",
+      "route.visionfb":"Vision-fallback","route.visionfb.d":"Fall back to multimodal models when text-only providers reject images.",
+      "routing.rel.t":"Built-in reliability","routing.rel.s":"Retries, fallbacks and provider health checks on every route decision.",
+      "feat.badge":"Why Musk","feat.title":"Built to be the only key you need","feat.sub":"A clean OpenAI-compatible surface over a routed, metered backend.",
+      "feat.f1.t":"OpenAI-compatible","feat.f1.d":"Drop-in for any SDK or client built for OpenAI. Same paths, same shapes, same streaming.",
+      "feat.f2.t":"Model routing","feat.f2.d":"Weighted, retried, auto-disabled channels. Pick the model, we handle failover and load.",
+      "feat.f3.t":"Usage-based billing","feat.f3.d":"Per-token accounting in USD. No subscriptions, no seat fees, no lock-in.",
+      "feat.f4.t":"Redemption top-up","feat.f4.d":"Reload balance instantly with redemption codes — no payment gateway required.",
+      "feat.f5.t":"Transparent logs","feat.f5.d":"Per-request usage, cost and cache-hit stats visible in your console dashboard.",
+      "feat.f6.t":"Keys & limits","feat.f6.d":"Token grouping, model restrictions and per-user rate limits out of the box.",
+      "price.badge":"Pricing","price.title":"Simple, usage-based pricing","price.sub":"You only pay for what models actually consume — billed per token, in USD.",
+      "price.p1.t":"Transparent rates","price.p1.d":"Every model's input, output and cache-hit multiplier is published on the pricing page.",
+      "price.p2.t":"Top up with codes","price.p2.d":"Add balance anytime with redemption codes. No card, no KYC friction to start.",
+      "price.p3.t":"No lock-in","price.p3.d":"No tiers, no subscriptions. Credit stays yours and is spent only as you call.",
+      "price.cta":"View full pricing",
+      "qs.badge":"Quick start","qs.title":"From sign-up to first call in minutes",
+      "qs.s1.t":"Sign up & grab a key","qs.s1.d":"Create an account and mint an API key in the console.","qs.s1.l":"Go to login",
+      "qs.s2.t":"Top up balance","qs.s2.d":"Redeem a code to add USD credit to your wallet.","qs.s2.l":"Top up",
+      "qs.s3.t":"Call the API","qs.s3.d":"Point any OpenAI client at the Musk endpoint and ship.","qs.s3.l":"Open console",
+      "faq.badge":"FAQ","faq.title":"Frequently asked",
+      "faq.q1":"How do I pay and add credit?","faq.a1":"Balance is added with redemption codes — purchase a code, paste it in the top-up page, and your USD wallet is credited instantly. No payment gateway or card required to start.",
+      "faq.q2":"Which models are available?","faq.a2":"The full, always-current list with live per-token pricing is on the pricing page. The cards above are illustrative examples; the backend is the source of truth.",
+      "faq.q3":"Is it OpenAI-compatible?","faq.a3":"Yes. The endpoint mirrors the OpenAI Chat Completions schema, so any OpenAI SDK or client works by pointing its base URL at https://db.muskapis.com.",
+      "faq.q4":"How is usage billed?","faq.a4":"Per token, in USD, with separate input, output and cache-hit multipliers per model. Every request's cost is logged in your console with full transparency.",
+      "faq.q5":"Can I set limits per key?","faq.a5":"Yes. Tokens support grouping, model restrictions and rate limits, all configurable from the console.",
+      "bcta.title":"Start building on","bcta.sub":"Grab a key, top up, and route your first request in minutes.","bcta.cta":"Get started"
+    },
+    zh: {
+      "nav.models":"模型","nav.routing":"路由","nav.pricing":"定价","nav.faq":"常见问题",
+      "nav.signin":"登录","nav.getstarted":"立即开始",
+      "hero.badge":"迪拜部署 · 美元计费 · 在线",
+      "hero.title1":"通往全球顶尖 AI 模型的",
+      "hero.title2":"统一网关",
+      "hero.lead":"一个 OpenAI 兼容端点，覆盖 Claude、GPT、Gemini 等——智能路由、按 token 美元计费、用兑换码充值。零上手门槛，拿到 key 即用。",
+      "hero.cta1":"立即开始","hero.cta2":"查看定价","hero.cta3":"试试 Playground",
+      "hero.m1":"OpenAI 兼容","hero.m2":"按量付费","hero.m3":"无需绑卡",
+      "stat.models":"可路由模型","stat.uptime":"服务可用率","stat.compat":"兼容 API","stat.pay":"按量计费",
+      "models.badge":"模型","models.title":"顶尖模型，一个端点全收",
+      "models.sub":"改一个字符串就能切换模型。实时按 token 定价与限额见定价页。",
+      "models.more.t":"以上模型为示例","models.more.s":"实际模型清单与实时按 token 定价由后端直接驱动。","models.more.btn":"完整清单与定价",
+      "tag.new":"最新","tag.flagship":"旗舰","tag.balanced":"均衡","tag.lite":"轻量","tag.image":"图像","tag.agent":"智能体","tag.general":"通用",
+      "tag.code":"代码","tag.reasoning":"推理","tag.longctx":"长上下文","tag.fast":"快速","tag.lowcost":"低成本","tag.vision":"视觉","tag.multi":"多语言",
+      "spec.ctx":"上下文","spec.out":"输出","spec.perimg":"按张计费",
+      "lat.mid":"中等延迟","lat.high":"高延迟","lat.low":"低延迟","lat.vlow":"极低延迟",
+      "grp.other":"其他模型",
+      "m.fable5":"最新模型，胜任复杂编程、智能体任务与深度分析。",
+      "m.opus48":"综合能力最强，适合硬核编程与架构设计。",
+      "m.opus47":"深度推理，适合长文处理与代码审查。",
+      "m.opus46":"上一代旗舰，适合复杂任务与代码审查。",
+      "m.sonnet5":"接近旗舰的均衡型，适合日常编程、智能体与对话。",
+      "m.sonnet46":"速度与质量兼顾，适合文档、对话与通用场景。",
+      "m.haiku45":"轻量、成本最低，适合简单问答与批量处理。",
+      "m.sol":"最新 5.6 系列旗舰，复杂推理与创意写作。",
+      "m.terra":"最新 5.6 系列均衡型，日常编程与通用任务。",
+      "m.luna":"最新 5.6 系列轻量型，快速问答与批量处理。",
+      "m.gpt55":"综合能力强，复杂推理、通用编程与创意写作。",
+      "m.gpt54":"融合 Codex 编程能力，适合专业文档任务。",
+      "m.gpt54mini":"快速高性价比，日常问答与批量处理。",
+      "m.gptimage2":"图像生成与创意设计。",
+      "m.gem35flash":"新一代速度与能力兼顾，多模态理解。",
+      "m.gem31pro":"长上下文旗舰，深度分析与长文档处理。",
+      "m.gem3flash":"快速响应高性价比，日常对话与批量处理。",
+      "m.gem31litelite":"超轻量、成本最低，适合高频调用。",
+      "m.gem3proimg":"旗舰级图像生成，高质量创意设计。",
+      "m.gem31flashimg":"快速出图，适合原型设计。",
+      "m.dsv4pro":"DeepSeek 旗舰，推理与编程。",
+      "m.glm":"智谱 GLM，通用任务。",
+      "m.kimi":"月之暗面 Kimi，长文本与智能体任务。",
+      "m.qwen":"阿里通义千问旗舰，综合任务。",
+      "routing.badge":"智能路由","routing.title":"一次接入，路由所有模型",
+      "routing.sub":"对外暴露一个稳定 API，Musk 在单一控制面后接管各厂商的端点、凭据与降级策略。SDK 不再散落，密钥不再散落。",
+      "routing.flow.title":"请求如何流转",
+      "routing.flow.desc":"每次调用都基于策略：Musk 综合成本、延迟、可用性与任务类型选出最优路径——并在失败时自动改道，你的代码无感知。",
+      "routing.f1":"你的请求 → 统一端点","routing.f2":"路由引擎按策略评估","routing.f3":"选定最优上游并自动重试","routing.f4":"响应与用量写入控制台",
+      "routing.strats.title":"路由策略",
+      "routing.strats.desc":"选择 Musk 选路的方式——按成本、延迟、可用性、任务类型或上下文需求。失败自动降级并触发上游健康检查。",
+      "route.cost":"成本优先","route.cost.d":"在不低于质量门槛的前提下，路由到最便宜的可胜任模型。",
+      "route.lowlat":"低延迟","route.lowlat.d":"为首字速度快的模型路由，适合对话与实时交互。",
+      "route.longctx":"长上下文","route.longctx.d":"把大输入送给上下文窗口最宽的模型。",
+      "route.visionfb":"视觉降级","route.visionfb.d":"纯文本上游拒收图片时，自动降级到多模态模型。",
+      "routing.rel.t":"内建可靠性","routing.rel.s":"每次路由决策都自带重试、降级与上游健康检查。",
+      "feat.badge":"为什么选 Musk","feat.title":"成为你唯一需要的 key","feat.sub":"在路由化、计量化的后端之上，一层干净的 OpenAI 兼容接口。",
+      "feat.f1.t":"OpenAI 兼容","feat.f1.d":"对任何为 OpenAI 构建的 SDK 或客户端即插即用。路径、结构、流式都一致。",
+      "feat.f2.t":"模型路由","feat.f2.d":"加权、重试、自动禁用渠道。你选模型，故障转移与负载我们来管。",
+      "feat.f3.t":"按量计费","feat.f3.d":"按 token、以美元核算。无订阅、无席位费、无锁定。",
+      "feat.f4.t":"兑换码充值","feat.f4.d":"用兑换码即时恢复余额——无需支付网关。",
+      "feat.f5.t":"透明日志","feat.f5.d":"每笔请求的用量、成本与缓存命中都可在控制台看板查看。",
+      "feat.f6.t":"密钥与限额","feat.f6.d":"令牌分组、模型限制与按用户速率限制，开箱即用。",
+      "price.badge":"定价","price.title":"简单、按量付费的定价","price.sub":"只为模型实际消耗付费——按 token、以美元计。",
+      "price.p1.t":"透明费率","price.p1.d":"每个模型的输入、输出与缓存命中倍率都在定价页公开。",
+      "price.p2.t":"兑换码充值","price.p2.d":"随时用兑换码加余额。无需绑卡，零 KYC 摩擦即可起步。",
+      "price.p3.t":"无锁定","price.p3.d":"无档位、无订阅。额度始终是你的，只在调用时消耗。",
+      "price.cta":"查看完整定价",
+      "qs.badge":"快速开始","qs.title":"从注册到首次调用，几分钟",
+      "qs.s1.t":"注册并获取 key","qs.s1.d":"创建账号，在控制台签发 API key。","qs.s1.l":"去登录",
+      "qs.s2.t":"充值余额","qs.s2.d":"兑换码为钱包充入美元额度。","qs.s2.l":"充值",
+      "qs.s3.t":"调用 API","qs.s3.d":"把任意 OpenAI 客户端指向 Musk 端点即可上手。","qs.s3.l":"打开控制台",
+      "faq.badge":"常见问题","faq.title":"常见问题",
+      "faq.q1":"怎么付费、怎么充值？","faq.a1":"余额用兑换码充值——购买兑换码，粘贴到充值页，美元钱包即时到账。无需支付网关或绑卡即可起步。",
+      "faq.q2":"有哪些模型？","faq.a2":"完整且始终最新的清单与实时按 token 定价见定价页。上方卡片为示意，后端为唯一事实来源。",
+      "faq.q3":"是 OpenAI 兼容吗？","faq.a3":"是的。端点镜像 OpenAI Chat Completions 协议，把 base URL 指向 https://db.muskapis.com 即可适配任何 OpenAI SDK 或客户端。",
+      "faq.q4":"用量怎么计费？","faq.a4":"按 token、以美元计，每个模型有独立的输入、输出与缓存命中倍率。每笔请求的成本都记入控制台，完全透明。",
+      "faq.q5":"能给每个 key 设限额吗？","faq.a5":"可以。令牌支持分组、模型限制与速率限制，均可在控制台配置。",
+      "bcta.title":"开始在","bcta.sub":"拿 key、充值、几分钟内发起第一次请求。","bcta.cta":"立即开始"
+    }
+  };
+
+  var html = document.documentElement;
+  var currentLang = "en";
+
+  function t(lang, key){ var d = I18N[lang] || I18N.en; return d[key] || I18N.en[key] || key; }
+
+  function applyLang(lang){
+    currentLang = lang;
+    html.setAttribute("lang", lang === "zh" ? "zh-CN" : "en");
+    var nodes = document.querySelectorAll("[data-i18n]");
+    for (var i=0;i<nodes.length;i++){
+      var el = nodes[i], key = el.getAttribute("data-i18n");
+      el.textContent = t(lang, key);
+    }
+    var bar = document.getElementById("bar");
+    if (bar){
+      var en = document.getElementById("langEn"), zh = document.getElementById("langZh");
+      if (en){ en.classList.toggle("on", lang === "en"); }
+      if (zh){ zh.classList.toggle("on", lang === "zh"); }
+    }
+  }
+
+  // map NewAPI's lang code (zhCN/zhTW/en/fr/ru/ja/vi) onto our two langs
+  function mapLang(v){
+    if (!v) return null;
+    var s = String(v).toLowerCase().replace(/_/g,"-");
+    if (s.indexOf("zh") === 0) return "zh";
+    return "en"; // en + anything else falls back to english copy
+  }
+
+  function pickInitialLang(){
+    // browser default
+    var nav = (navigator.language || navigator.browserLanguage || "en").toLowerCase();
+    return nav.indexOf("zh") === 0 ? "zh" : "en";
+  }
+
+  function setLangAndPersist(lang){
+    applyLang(lang);
+    try { localStorage.setItem("musk_lang", lang); } catch(e){}
+  }
+
+  function setTheme(mode, persist){
+    var dark = (mode === "dark");
+    html.classList.toggle("dark", dark);
+    var btn = document.getElementById("themeBtn");
+    if (btn) btn.textContent = dark ? "☀" : "🌙";
+    if (persist) try { localStorage.setItem("musk_theme", dark ? "dark" : "light"); } catch(e){}
+  }
+
+  // ---------- boot ----------
+  var inIframe = false;
+  try { inIframe = (window.self !== window.top); } catch(e){ inIframe = true; }
+
+  if (inIframe){
+    document.body.classList.add("iframe-host"); // hide our own bar
+    // ask parent for current prefs on load
+    try { window.parent.postMessage({ type: "musk-ask-prefs" }, "*"); } catch(e){}
+  }
+
+  // NewAPI sends {themeMode} and {lang}. Listen and react.
+  window.addEventListener("message", function(ev){
+    var d = ev.data;
+    if (!d || typeof d !== "object") return;
+    if ("themeMode" in d){ setTheme(d.themeMode, false); }
+    if ("lang" in d){
+      var mapped = mapLang(d.lang);
+      if (mapped) applyLang(mapped);
+    }
+  });
+
+  // own controls (only meaningful when NOT in iframe)
+  if (!inIframe){
+    var en = document.getElementById("langEn"), zh = document.getElementById("langZh");
+    if (en) en.onclick = function(){ setLangAndPersist("en"); };
+    if (zh) zh.onclick = function(){ setLangAndPersist("zh"); };
+    var tb = document.getElementById("themeBtn");
+    if (tb) tb.onclick = function(){
+      var dark = !html.classList.contains("dark");
+      setTheme(dark ? "dark" : "light", true);
+    };
+  }
+
+  // initial state
+  var initTheme = "light";
+  try {
+    var savedTheme = localStorage.getItem("musk_theme");
+    if (savedTheme) initTheme = savedTheme;
+    else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) initTheme = "dark";
+  } catch(e){}
+  setTheme(initTheme, false);
+
+  var initLang;
+  if (inIframe){
+    initLang = pickInitialLang(); // will be overridden by parent postMessage when it arrives
+  } else {
+    try { initLang = localStorage.getItem("musk_lang") || pickInitialLang(); } catch(e){ initLang = pickInitialLang(); }
+  }
+  applyLang(initLang);
+
+  // CTA links: rewrite anchor hrefs that still point to relative "/" into the NewAPI base
+  var anchors = document.querySelectorAll('a[href^="https://db.muskapis.com"]');
+  for (var a=0;a<anchors.length;a++){
+    anchors[a].setAttribute("href", anchors[a].getAttribute("href").replace("https://db.muskapis.com", NEWAPI_BASE));
+  }
+  // bar signin/getstarted also point to login
+  var navAnchors = document.querySelectorAll('#bar .nav a.nb');
+  for (var n=0;n<navAnchors.length;n++){ navAnchors[n].setAttribute("href", NEWAPI_BASE + "/login"); navAnchors[n].setAttribute("target","_top"); }
+
+  // FAQ: re-render text after lang change already handled by applyLang (details stay open)
+})();
+</script>
+</body>
+</html>
