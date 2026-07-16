@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Musk · italic & script K/M</title>
+<style>
+  :root{--bg:oklch(1 0 0);--fg:oklch(0.145 0 0);--muted:oklch(0.49 0 0);--border:oklch(0.93 0 0);--card:oklch(1 0 0);--primary:oklch(0.692 0.141 243.716)}
+  html.dark{--bg:oklch(0.145 0 0);--fg:oklch(0.985 0 0);--muted:oklch(0.708 0 0);--border:oklch(1 0 0 / 10%);--card:oklch(0.208 0 0);--primary:oklch(0.708 0.16 249.003)}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:'Public Sans',ui-sans-serif,system-ui,sans-serif;padding:48px 24px}
+  h1{font-size:24px;margin:0 0 8px;letter-spacing:-.02em}
+  p.sub{color:var(--muted);margin:0 0 36px;font-size:14px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:900px}
+  .card{border:1px solid var(--border);border-radius:16px;background:var(--card);padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .card .mark{width:84px;height:84px;display:grid;place-items:center}
+  .card .mark svg{width:100%;height:100%;display:block}
+  .card .name{font-weight:700;letter-spacing:-.01em;font-size:14px}
+  .card .desc{color:var(--muted);font-size:11.5px;text-align:center;line-height:1.5}
+  .card .tag{font-size:10px;font-weight:600;color:var(--primary);border:1px solid var(--border);border-radius:999px;padding:2px 9px}
+  .toolbar{position:fixed;right:16px;bottom:16px}
+  .toolbar button{border:1px solid var(--border);background:var(--card);color:var(--fg);border-radius:10px;padding:8px 12px;font-size:13px;cursor:pointer}
+</style>
+</head>
+<body>
+<h1>Musk — italic & script K / M</h1>
+<p class="sub">Italian-italic slant + cursive/script flourishes. 6 marks (3 K + 3 M). Pick one (I1–I6).</p>
+
+<div class="grid">
+
+  <!-- I1: italic K — slanted straight strokes, sharp miter -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="i1" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#6d8bff"/><stop offset="1" stop-color="#9b6dff"/></linearGradient></defs>
+        <path d="M10 28L13 4" stroke="url(#i1)" stroke-width="3.6" stroke-linecap="round"/>
+        <path d="M13 16 23 5" stroke="url(#i1)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="miter"/>
+        <path d="M13 16 24 27" stroke="url(#i1)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="miter"/>
+      </svg>
+    </div>
+    <div class="name">I1 · Italic K</div>
+    <div class="desc">A capital K slanted right (Italian italic). Straight sharp strokes, mitered fork — momentum from the lean.</div>
+    <span class="tag">italic · K</span>
+  </div>
+
+  <!-- I2: script K — cursive single-stroke K with a loop/entry stroke -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="i2" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#6d8bff"/><stop offset="1" stop-color="#9b6dff"/></linearGradient></defs>
+        <!-- entry stroke sweeping in from lower-left, up the stem, out the upper prong -->
+        <path d="M4 26C7 18 9 10 11 4c4 2 8 3 13 3" stroke="url(#i2)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- lower prong branching off the stem -->
+        <path d="M11 14c4 4 7 8 10 12" stroke="url(#i2)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="name">I2 · Script K</div>
+    <div class="desc">Cursive K drawn as one flowing ribbon: an entry stroke sweeps in, rises through the stem, and exits the upper prong; lower prong branches off.</div>
+    <span class="tag">script · K</span>
+  </div>
+
+  <!-- I3: italic M — slanted, sharp angles, two peaks -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="i3" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#6d8bff"/><stop offset="1" stop-color="#9b6dff"/></linearGradient></defs>
+        <path d="M5 27 8 5 16 20 24 5 27 27" stroke="url(#i3)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="miter"/>
+      </svg>
+    </div>
+    <div class="name">I3 · Italic M</div>
+    <div class="desc">A capital M slanted right, sharp mitered peaks. The slant gives forward momentum; the two peaks keep structure.</div>
+    <span class="tag">italic · M</span>
+  </div>
+
+  <!-- I4: script M — one continuous cursive stroke, curved arches -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="i4" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#6d8bff"/><stop offset="1" stop-color="#9b6dff"/></linearGradient></defs>
+        <path d="M5 27C6 18 7 10 9 4c2 5 4 9 7 12 3-3 5-7 7-12 2 6 3 14 4 23" stroke="url(#i4)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="name">I4 · Script M</div>
+    <div class="desc">Cursive M as a single continuous stroke — two soft arches rise and fall in one ribbon. Most flowing, no sharp corners.</div>
+    <span class="tag">script · M</span>
+  </div>
+
+  <!-- I5: italic M with tapered entry/exit tails (streamline) -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="i5" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#6d8bff"/><stop offset="1" stop-color="#9b6dff"/></linearGradient></defs>
+        <!-- entry tail into the left leg -->
+        <path d="M2 28 6 26" stroke="url(#i5)" stroke-width="1.7" stroke-linecap="round" opacity=".6"/>
+        <path d="M6 26 8 5 16 20 24 5 26 26" stroke="url(#i5)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="miter"/>
+        <!-- exit tail off the right leg -->
+        <path d="M26 26 30 28" stroke="url(#i5)" stroke-width="1.7" stroke-linecap="round" opacity=".6"/>
+      </svg>
+    </div>
+    <div class="name">I5 · Stream-M</div>
+    <div class="desc">Italic sharp M with thin entry and exit tails — streamline motion-blur at both ends, sharp peaks in the middle. Flow + power.</div>
+    <span class="tag">italic · streamline</span>
+  </div>
+
+  <!-- I6: italic K with one sweeping entry stroke (cursive accent on a sharp K) -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="i6" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#6d8bff"/><stop offset="1" stop-color="#9b6dff"/></linearGradient></defs>
+        <!-- sharp slanted stem -->
+        <path d="M10 28 13 4" stroke="url(#i6)" stroke-width="3.6" stroke-linecap="round"/>
+        <!-- sharp mitered prongs -->
+        <path d="M13 16 23 5" stroke="url(#i6)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="miter"/>
+        <path d="M13 16 24 27" stroke="url(#i6)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="miter"/>
+        <!-- cursive entry flourish sweeping into the base of the stem -->
+        <path d="M3 24c2 1 4 2 7 4" stroke="url(#i6)" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+      </svg>
+    </div>
+    <div class="name">I6 · Flourish-K</div>
+    <div class="desc">Sharp italic K with a cursive entry flourish sweeping into the stem base — script accent on an otherwise crisp letter.</div>
+    <span class="tag">italic + flourish</span>
+  </div>
+
+</div>
+
+<div class="toolbar"><button id="t">🌙 Toggle</button></div>
+<script>
+(function(){var h=document.documentElement,b=document.getElementById('t');b.onclick=function(){h.classList.toggle('dark')}})();
+</script>
+</body>
+</html>
