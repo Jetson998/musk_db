@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Musk · Unified AI API Gateway</title>
 <meta name="description" content="Your unified gateway to the world's leading AI models. One OpenAI-compatible API. Dubai-deployed, USD billing, redemption-code top-up.">
+<link rel="icon" type="image/png" href="musk-logo.png">
 <!--
   Musk Landing — standalone bilingual home page, embedded into NewAPI via iframe
   (admin sets HomePageContent = this page's URL). All visible text is driven by
@@ -52,7 +53,8 @@
   /* landing bar (shown only when NOT in iframe) */
   .bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 24px;height:60px;border-bottom:1px solid var(--border);background:color-mix(in oklch,var(--background) 82%,transparent);backdrop-filter:blur(10px)}
   .bar .brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em}
-  .bar .brand .logo{width:26px;height:26px;border-radius:8px;background:var(--primary)}
+  .bar .brand .logo{width:28px;height:28px;border-radius:8px;background:var(--primary) center/contain no-repeat}
+  .bar .brand .logo img{width:100%;height:100%;object-fit:contain;display:block}
   .bar .nav{display:flex;align-items:center;gap:8px}
   .bar .nav a{color:var(--muted-foreground);font-size:14px;padding:6px 10px;border-radius:8px}
   .bar .nav a:hover{color:var(--foreground);background:color-mix(in oklch,var(--card) 60%,transparent)}
@@ -204,7 +206,7 @@
 
 <!-- ===== Landing bar (hidden when embedded in NewAPI iframe) ===== -->
 <div class="bar" id="bar">
-  <a class="brand" href="/"><span class="logo"></span> Musk</a>
+  <a class="brand" href="/"><span class="logo"><img src="musk-logo.png" alt="Musk" onerror="this.style.display='none'"></span> Musk</a>
   <div class="nav">
     <a href="#models" data-i18n="nav.models">Models</a>
     <a href="#routing" data-i18n="nav.routing">Routing</a>
