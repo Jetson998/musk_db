@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Musk · Ж / K cross candidates</title>
+<style>
+  :root{--bg:oklch(1 0 0);--fg:oklch(0.145 0 0);--muted:oklch(0.49 0 0);--border:oklch(0.93 0 0);--card:oklch(1 0 0);--primary:oklch(0.692 0.141 243.716)}
+  html.dark{--bg:oklch(0.145 0 0);--fg:oklch(0.985 0 0);--muted:oklch(0.708 0 0);--border:oklch(1 0 0 / 10%);--card:oklch(0.208 0 0);--primary:oklch(0.708 0.16 249.003)}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:'Public Sans',ui-sans-serif,system-ui,sans-serif;padding:48px 24px}
+  h1{font-size:24px;margin:0 0 8px;letter-spacing:-.02em}
+  p.sub{color:var(--muted);margin:0 0 36px;font-size:14px}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:760px}
+  .card{border:1px solid var(--border);border-radius:16px;background:var(--card);padding:32px;display:flex;flex-direction:column;align-items:center;gap:18px}
+  .card .mark{width:96px;height:96px;display:grid;place-items:center}
+  .card .mark svg{width:100%;height:100%;display:block}
+  .card .name{font-weight:700;letter-spacing:-.01em}
+  .card .desc{color:var(--muted);font-size:12.5px;text-align:center;line-height:1.55}
+  .card .tag{font-size:11px;font-weight:600;color:var(--primary);border:1px solid var(--border);border-radius:999px;padding:3px 10px}
+  .toolbar{position:fixed;right:16px;bottom:16px}
+  .toolbar button{border:1px solid var(--border);background:var(--card);color:var(--fg);border-radius:10px;padding:8px 12px;font-size:13px;cursor:pointer}
+</style>
+</head>
+<body>
+<h1>Musk — Ж / K-cross (Russian-K style)</h1>
+<p class="sub">The Russian letter Ж (Zhe): two mirror X-prongs meeting on a central vertical. Reads as a K with both sides. 4 marks. Pick one (Ж1–Ж4).</p>
+
+<div class="grid">
+
+  <!-- Ж1: clean symmetric Ж, straight strokes, tapered round caps -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="j1" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#6d8bff"/><stop offset="1" stop-color="#9b6dff"/></linearGradient></defs>
+        <!-- central vertical stem -->
+        <path d="M16 28V4" stroke="url(#j1)" stroke-width="3.4" stroke-linecap="round"/>
+        <!-- upper-left to center to lower-right (the X) -->
+        <path d="M4 6c4 4 8 7 12 10s8 6 12 10" stroke="url(#j1)" stroke-width="3.4" stroke-linecap="round"/>
+        <!-- upper-right to center to lower-left (mirror X) -->
+        <path d="M28 6c-4 4-8 7-12 10s-8 6-12 10" stroke="url(#j1)" stroke-width="3.4" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="name">Ж1 · Clean</div>
+    <div class="desc">Pure symmetric Ж: a central stem crossed by two mirror diagonals that meet at the middle. Balanced, four-way, like a K mirrored on both sides.</div>
+    <span class="tag">balanced · four-way</span>
+  </div>
+
+  <!-- Ж2: curved diagonal strokes (fluid), straight stem -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="j2" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#6d8bff"/><stop offset="1" stop-color="#9b6dff"/></linearGradient></defs>
+        <path d="M16 28V4" stroke="url(#j2)" stroke-width="3.4" stroke-linecap="round"/>
+        <!-- curved flowing diagonals that bow outward then meet center -->
+        <path d="M3 7c5 3 9 6 13 9s7 6 13 9" stroke="url(#j2)" stroke-width="3.4" stroke-linecap="round"/>
+        <path d="M29 7c-5 3-9 6-13 9s-7 6-13 9" stroke="url(#j2)" stroke-width="3.4" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="name">Ж2 · Flow</div>
+    <div class="desc">Same symmetric Ж, but the diagonals curve gently outward — flowing rather than rigid. Reads as four streams converging on the spine.</div>
+    <span class="tag">balanced · fluid</span>
+  </div>
+
+  <!-- Ж3: tapered tails at all four tips (streamline) + node at the crossing -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="j3" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#6d8bff"/><stop offset="1" stop-color="#9b6dff"/></linearGradient></defs>
+        <path d="M16 28V4" stroke="url(#j3)" stroke-width="3.4" stroke-linecap="round"/>
+        <!-- main diagonals with tapered trailing tails at the four outer tips -->
+        <path d="M5 6c4 4 8 7 11 10" stroke="url(#j3)" stroke-width="3.4" stroke-linecap="round"/>
+        <path d="M5 6c-1.6-1-3-1.6-4.4-2" stroke="url(#j3)" stroke-width="1.7" stroke-linecap="round" opacity=".6"/>
+        <path d="M16 16c4 3 7 6 11 10" stroke="url(#j3)" stroke-width="3.4" stroke-linecap="round"/>
+        <path d="M27 26c1.6 1 3 1.6 4.4 2" stroke="url(#j3)" stroke-width="1.7" stroke-linecap="round" opacity=".6"/>
+        <path d="M27 6c-4 4-8 7-11 10" stroke="url(#j3)" stroke-width="3.4" stroke-linecap="round"/>
+        <path d="M27 6c1.6-1 3-1.6 4.4-2" stroke="url(#j3)" stroke-width="1.7" stroke-linecap="round" opacity=".6"/>
+        <path d="M16 16c-4 3-7 6-11 10" stroke="url(#j3)" stroke-width="3.4" stroke-linecap="round"/>
+        <path d="M5 26c-1.6 1-3 1.6-4.4 2" stroke="url(#j3)" stroke-width="1.7" stroke-linecap="round" opacity=".6"/>
+      </svg>
+    </div>
+    <div class="name">Ж3 · Taper</div>
+    <div class="desc">Symmetric Ж where every one of the four outer tips carries a thin trailing tail — streamline motion-blur at all four exits. Most "flow + power" while staying a clean Ж.</div>
+    <span class="tag">streamline · four-tail</span>
+  </div>
+
+  <!-- Ж4: app-icon Ж — gradient tile + white strokes -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="j4" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#5b7cfa"/><stop offset="1" stop-color="#7c5bfa"/></linearGradient></defs>
+        <rect x="2" y="2" width="28" height="28" rx="9" fill="url(#j4)"/>
+        <path d="M16 25V7" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M6 8c3.4 3 6.8 5.4 10 8" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M16 16c3.2-2.6 6.6-5 10-8" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M6 24c3.4-3 6.8-5.4 10-8" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M16 16c3.2 2.6 6.6 5 10 8" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="name">Ж4 · App-icon</div>
+    <div class="desc">The Ж mark on a rounded gradient tile with white strokes — a real app-icon / favicon that scales cleanly.</div>
+    <span class="tag">app-icon</span>
+  </div>
+
+</div>
+
+<div class="toolbar"><button id="t">🌙 Toggle</button></div>
+<script>
+(function(){var h=document.documentElement,b=document.getElementById('t');b.onclick=function(){h.classList.toggle('dark')}})();
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Musk · asymmetric K</title>
+<style>
+  :root{--bg:oklch(1 0 0);--fg:oklch(0.145 0 0);--muted:oklch(0.49 0 0);--border:oklch(0.93 0 0);--card:oklch(1 0 0);--primary:oklch(0.692 0.141 243.716)}
+  html.dark{--bg:oklch(0.145 0 0);--fg:oklch(0.985 0 0);--muted:oklch(0.708 0 0);--border:oklch(1 0 0 / 10%);--card:oklch(0.208 0 0);--primary:oklch(0.708 0.16 249.003)}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:'Public Sans',ui-sans-serif,system-ui,sans-serif;padding:48px 24px}
+  h1{font-size:24px;margin:0 0 8px;letter-spacing:-.02em}
+  p.sub{color:var(--muted);margin:0 0 36px;font-size:14px}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:760px}
+  .card{border:1px solid var(--border);border-radius:16px;background:var(--card);padding:32px;display:flex;flex-direction:column;align-items:center;gap:18px}
+  .card .mark{width:88px;height:88px;display:grid;place-items:center}
+  .card .mark svg{width:100%;height:100%;display:block}
+  .card .name{font-weight:700;letter-spacing:-.01em}
+  .card .desc{color:var(--muted);font-size:12.5px;text-align:center;line-height:1.55}
+  .card .tag{font-size:11px;font-weight:600;color:var(--primary);border:1px solid var(--border);border-radius:999px;padding:3px 10px}
+  .toolbar{position:fixed;right:16px;bottom:16px}
+  .toolbar button{border:1px solid var(--border);background:var(--card);color:var(--fg);border-radius:10px;padding:8px 12px;font-size:13px;cursor:pointer}
+</style>
+</head>
+<body>
+<h1>Musk — asymmetric fluid-power K</h1>
+<p class="sub">Upper and lower prongs differ in angle AND length. Stays simple (3 strokes), keeps the fluid + power feel. Pick one (A1–A4).</p>
+
+<div class="grid">
+
+  <!-- A1: short steep up-prong + long shallow down-prong (power thrust down/right) -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="a1" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#6d8bff"/><stop offset="1" stop-color="#9b6dff"/></linearGradient></defs>
+        <path d="M9 27c1.2-7 1.2-16 0-23" stroke="url(#a1)" stroke-width="3.6" stroke-linecap="round"/>
+        <!-- short, steep up prong -->
+        <path d="M9 15c2.4-2.4 4-5 5-8" stroke="url(#a1)" stroke-width="3.4" stroke-linecap="round"/>
+        <!-- long, shallow down prong sweeping out -->
+        <path d="M9 16c5 2.4 9 4 15 5.5" stroke="url(#a1)" stroke-width="3.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="name">A1 · Thrust</div>
+    <div class="desc">Short steep upper prong, long shallow lower prong that sweeps far out. Reads as a downward/forward thrust — force directed.</div>
+    <span class="tag">thrust · long-low</span>
+  </div>
+
+  <!-- A2: long sweeping up-prong + short sharp down-prong (lift/launch) -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="a2" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#6d8bff"/><stop offset="1" stop-color="#9b6dff"/></linearGradient></defs>
+        <path d="M9 27c1.2-7 1.2-16 0-23" stroke="url(#a2)" stroke-width="3.6" stroke-linecap="round"/>
+        <!-- long, shallow up prong sweeping out -->
+        <path d="M9 15c5-2.4 9-4 15-5.5" stroke="url(#a2)" stroke-width="3.6" stroke-linecap="round"/>
+        <!-- short, steep down prong -->
+        <path d="M9 16c2.4 2.4 4 5 5 8" stroke="url(#a2)" stroke-width="3.4" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="name">A2 · Lift</div>
+    <div class="desc">Long sweeping upper prong, short steep lower prong. Mirror of A1 — reads as lift/launch upward.</div>
+    <span class="tag">lift · long-high</span>
+  </div>
+
+  <!-- A3: curved stem + asymmetric prongs, both swept (most fluid) -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="a3" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#6d8bff"/><stop offset="1" stop-color="#9b6dff"/></linearGradient></defs>
+        <!-- gently curved stem (tension) -->
+        <path d="M8.5 27C10 19 10 11 8.5 4" stroke="url(#a3)" stroke-width="3.6" stroke-linecap="round"/>
+        <!-- short upper prong, steep, with a tiny tail -->
+        <path d="M8.6 14c2-2 3.4-4.4 4.4-7 .8.6 1.6 1 2.6 1.2" stroke="url(#a3)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- long lower prong, shallow, sweeping far with tapered tail -->
+        <path d="M8.6 17c5 2 9 3.4 14 6 1.2.8 2 1.6 2.6 2.4" stroke="url(#a3)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="name">A3 · Drift</div>
+    <div class="desc">Curved bow stem + asymmetric swept prongs (short steep up with tail, long shallow down with tail). Most fluid while asymmetric.</div>
+    <span class="tag">flow · asymmetric</span>
+  </div>
+
+  <!-- A4: straight stem, one prong curved-long one prong straight-short (mixed mechanics) -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="a4" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#6d8bff"/><stop offset="1" stop-color="#9b6dff"/></linearGradient></defs>
+        <path d="M9 27V5" stroke="url(#a4)" stroke-width="3.6" stroke-linecap="round"/>
+        <!-- long curved upper prong (fluid) -->
+        <path d="M9 15c4-1.6 7-4 10-7.5 1.4.2 3 .2 4.4 0" stroke="url(#a4)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- short straight lower prong (mechanical, sharp) -->
+        <path d="M9 16l6 6" stroke="url(#a4)" stroke-width="3.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="name">A4 · Mix</div>
+    <div class="desc">Upper prong long + curved (fluid), lower prong short + straight (mechanical). Mixed character — flow meets a hard stop.</div>
+    <span class="tag">fluid × mechanical</span>
+  </div>
+
+</div>
+
+<div class="toolbar"><button id="t">🌙 Toggle</button></div>
+<script>
+(function(){var h=document.documentElement,b=document.getElementById('t');b.onclick=function(){h.classList.toggle('dark')}})();
+</script>
+</body>
+</html>

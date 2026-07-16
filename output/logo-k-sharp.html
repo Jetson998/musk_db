@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Musk · sharp-angle K</title>
+<style>
+  :root{--bg:oklch(1 0 0);--fg:oklch(0.145 0 0);--muted:oklch(0.49 0 0);--border:oklch(0.93 0 0);--card:oklch(1 0 0);--primary:oklch(0.692 0.141 243.716)}
+  html.dark{--bg:oklch(0.145 0 0);--fg:oklch(0.985 0 0);--muted:oklch(0.708 0 0);--border:oklch(1 0 0 / 10%);--card:oklch(0.208 0 0);--primary:oklch(0.708 0.16 249.003)}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:'Public Sans',ui-sans-serif,system-ui,sans-serif;padding:48px 24px}
+  h1{font-size:24px;margin:0 0 8px;letter-spacing:-.02em}
+  p.sub{color:var(--muted);margin:0 0 36px;font-size:14px}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:760px}
+  .card{border:1px solid var(--border);border-radius:16px;background:var(--card);padding:32px;display:flex;flex-direction:column;align-items:center;gap:18px}
+  .card .mark{width:96px;height:96px;display:grid;place-items:center}
+  .card .mark svg{width:100%;height:100%;display:block}
+  .card .name{font-weight:700;letter-spacing:-.01em}
+  .card .desc{color:var(--muted);font-size:12.5px;text-align:center;line-height:1.55}
+  .card .tag{font-size:11px;font-weight:600;color:var(--primary);border:1px solid var(--border);border-radius:999px;padding:3px 10px}
+  .toolbar{position:fixed;right:16px;bottom:16px}
+  .toolbar button{border:1px solid var(--border);background:var(--card);color:var(--fg);border-radius:10px;padding:8px 12px;font-size:13px;cursor:pointer}
+</style>
+</head>
+<body>
+<h1>Musk — sharp-angle uppercase K</h1>
+<p class="sub">Straight strokes, sharp corners (no rounding at the fork). Flow + power come from tapered/streamline ends and direction, not curves. Pick one (S1–S4).</p>
+
+<div class="grid">
+
+  <!-- S1: clean sharp K, miter joins, round-cap tapered ends -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="s1" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#6d8bff"/><stop offset="1" stop-color="#9b6dff"/></linearGradient></defs>
+        <path d="M9 28V4" stroke="url(#s1)" stroke-width="3.6" stroke-linecap="round"/>
+        <path d="M9 16 20 5" stroke="url(#s1)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="miter"/>
+        <path d="M9 16 20 27" stroke="url(#s1)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="miter"/>
+      </svg>
+    </div>
+    <div class="name">S1 · Miter</div>
+    <div class="desc">A clean sharp K: straight strokes meeting at a mitered (pointed) fork. Round caps only at the very tips give a tapered streamline end; the corner itself stays sharp.</div>
+    <span class="tag">sharp · clean</span>
+  </div>
+
+  <!-- S2: sharp K with tapered trailing tails at the two prong tips -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="s2" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#6d8bff"/><stop offset="1" stop-color="#9b6dff"/></linearGradient></defs>
+        <path d="M9 28V4" stroke="url(#s2)" stroke-width="3.6" stroke-linecap="round"/>
+        <!-- upper prong straight, miter join, then a thin trailing tail -->
+        <path d="M9 16 20 5" stroke="url(#s2)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="miter"/>
+        <path d="M20 5l4-2.5" stroke="url(#s2)" stroke-width="1.7" stroke-linecap="round" opacity=".6"/>
+        <!-- lower prong straight, miter, thin tail -->
+        <path d="M9 16 20 27" stroke="url(#s2)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="miter"/>
+        <path d="M20 27l4 2.5" stroke="url(#s2)" stroke-width="1.7" stroke-linecap="round" opacity=".6"/>
+      </svg>
+    </div>
+    <div class="name">S2 · Taper-tail</div>
+    <div class="desc">Sharp mitered K whose two prong tips carry thin trailing tails — streamline motion-blur. Power reads at the sharp corner, flow reads at the tapered exits.</div>
+    <span class="tag">sharp · streamline</span>
+  </div>
+
+  <!-- S3: sharp K, asymmetric prong lengths (one long one short) but straight + sharp -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="s3" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#6d8bff"/><stop offset="1" stop-color="#9b6dff"/></linearGradient></defs>
+        <path d="M9 28V4" stroke="url(#s3)" stroke-width="3.6" stroke-linecap="round"/>
+        <!-- short upper prong, steep -->
+        <path d="M9 16 16 7" stroke="url(#s3)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="miter"/>
+        <!-- long lower prong, shallow, sweeps far -->
+        <path d="M9 16 27 25" stroke="url(#s3)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="miter"/>
+      </svg>
+    </div>
+    <div class="name">S3 · Asym-sharp</div>
+    <div class="desc">Sharp straight K with unequal prong lengths and different angles — short steep upper, long shallow lower. Reads as a directed thrust, all corners sharp.</div>
+    <span class="tag">sharp · directed</span>
+  </div>
+
+  <!-- S4: app-icon sharp K — gradient tile + white mitered K -->
+  <div class="card">
+    <div class="mark">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="s4" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#5b7cfa"/><stop offset="1" stop-color="#7c5bfa"/></linearGradient></defs>
+        <rect x="2" y="2" width="28" height="28" rx="9" fill="url(#s4)"/>
+        <path d="M11 25V7" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>
+        <path d="M11 16 22 7" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="miter"/>
+        <path d="M11 16 22 25" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="miter"/>
+      </svg>
+    </div>
+    <div class="name">S4 · App-icon</div>
+    <div class="desc">The sharp mitered K on a rounded gradient tile with white strokes — a real app-icon / favicon that scales cleanly.</div>
+    <span class="tag">app-icon</span>
+  </div>
+
+</div>
+
+<div class="toolbar"><button id="t">🌙 Toggle</button></div>
+<script>
+(function(){var h=document.documentElement,b=document.getElementById('t');b.onclick=function(){h.classList.toggle('dark')}})();
+</script>
+</body>
+</html>
